@@ -1,0 +1,142 @@
+#af-container{
+  margin-bottom: 50px;
+}
+
+#af-tabs{
+  width: 960px;
+  margin:auto;
+}
+
+#af-item-container{
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+#af-item{
+  width: 620px;
+  margin: auto;
+  margin-right: auto;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  overflow: hidden;
+  padding-right: 340px;
+}
+
+#af-item-icon{
+  font-size: 34px;
+  margin-right: 10px;
+}
+
+#af-item-info{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: #e0e0e0 2px 2px 0;
+}
+
+#af-info-top{
+  width: 560px;
+  background-color: #FFFFFF;
+  height: 60px;
+  color: black;
+  border: 1px solid #CDCDCD;
+}
+
+#af-item-info-name-dist{
+  margin-left: 10px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+#af-info-top #name{
+  display: flex;
+}
+#af-info-top #name a{
+  color: #2F98D9;
+}
+#af-info-top #created-at{
+  margin-left: auto;
+  padding-right: 5px;
+}
+
+#af-info-top #description{
+  color: #666666;
+}
+
+#af-info-middle{
+  background-color: #F8F8F8;
+  width: 560px;
+  text-align: center;
+  border: 1px solid #CDCDCD;
+  color: #666666;
+  font-size: 34px;
+  display: flex;
+  align-items: center;
+}
+
+#af-distance{
+  width: 33.3%;
+  height: 155px;
+  border-right: 1px solid #CDCDCD;
+}
+
+#af-distance span{
+  font-size: 18px;
+}
+
+#af-pace{
+  width: 33.3%;
+  height: 155px;
+  border-right: 1px solid #CDCDCD;
+}
+
+#af-pace span{
+  font-size: 18px;
+}
+
+#af-map{
+  width: 33.3%;
+  height: 155px;
+}
+
+#af-map img{
+  height:155px;
+}
+
+#af-info-comments{
+  width: 560px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #CDCDCD;
+  border-left: 1px solid #CDCDCD;
+  border-bottom: 1px solid #CDCDCD;
+}
+
+#af-info-comments #comment-item{
+  position: relative;
+  display: flex;
+  width: 560px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-top: 0px;
+  border-bottom: 0px;
+  box-sizing: border-box;
+}
+#af-info-comments #comment-items{
+  width: 560px;
+  margin-top: 0px;
+}
+
+#af-info-comments #comments-form{
+  position: relative;
+  display: flex;
+  width: 560px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+#af-info-comments #comments-form form{
+  width: 540px;
+  box-sizing:border-box;
+}

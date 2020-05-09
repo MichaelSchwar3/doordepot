@@ -1,0 +1,1 @@
+json.extract! @options, :frame_types, :constructions, :channels, :locksets, :types, :hinges

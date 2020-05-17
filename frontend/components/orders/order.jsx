@@ -2,8 +2,9 @@ import React from "react";
 import { connect } from 'react-redux'
 import { Link } from "react-router-dom";
 import { formatDate } from "../../util/date_util";
-import { isEmpty } from 'lodash';
+import { isEmpty, values } from 'lodash';
 import { fetchOrder} from '../../actions/order_actions';
+import DoorListingRow from '../doorListings/door_listings_row';
 
 class Order extends React.Component {
   constructor(props) {
@@ -23,38 +24,25 @@ class Order extends React.Component {
   }
 
   render() {
-    console.log(this.props.order)
     if (!this.props.order) {return null}
     const order = this.props.order;
     return (
       <div className="workout-show">
         <section id="workout-show-info">
           <div id="wsi-head">
-            <div id="wsi-head-title">{order.orderNumber}</div>
+            <div id="wsi-head-title">Order Number: {order.orderNumber}</div>
             <div id="wsi-head-body">
-              <div className="wsi-head-body-obj" id="wsi-head-body-distance">
-                <p id="distance">DISTANCE</p>
-                <span id="distance-miles">{order.distance}</span>
-              </div>
-              <div className="wsi-head-body-obj" id="wsi-head-body-duration">
-                <span id="duration">DURATION</span>
-                <span id="duration-time">{"PlaceHolder"}</span>
-              </div>
-              <div className="wsi-head-body-obj" id="wsi-head-body-pace">
-                <span id="pace">PACE</span>
-                <span id="pace-time">PLaceholder</span>
-              </div>
+              
             </div>
             <div id="wsi-head-bottom">
-              <div id="wsi-head-bottom-icon">&#128100;</div>
               <div id="wsi-head-bottom-info">
-                Created at - {formatDate(order.createdAt)}
-                <br />
-                Last Updated at - {formatDate(order.updatedAt)}
+                <span>Created at - {formatDate(order.createdAt)}</span>
+
+                <span>Last Updated at - {formatDate(order.updatedAt)}</span>
               </div>
             </div>
             <div id="wsi-head-buttons">
-              <Link to={`/orders/${order.id}`}>
+              <Link to={`/orders/${order.id}/doorListings/create`}>
                 <button id="wsi-edit">Add Door Line</button>
               </Link>
               <Link to={`/orders/${order.id}`}>
@@ -63,6 +51,11 @@ class Order extends React.Component {
             </div>
           </div>
         </section>
+        <section>
+          {this.props.doorListings.map( listing => (
+            <DoorListingRow doorListing={listing} />
+          ))}
+        </section>
       </div>
     );
   }
@@ -70,7 +63,8 @@ class Order extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   errors: state.errors,
-  order: state.entities.orders[ownProps.match.params.orderId]
+  order: state.entities.orders[ownProps.match.params.orderId],
+  doorListings: values(state.entities.doorListings),
 });
 
 const mapDispatchToProps = dispatch => ({

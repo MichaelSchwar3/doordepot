@@ -1,5 +1,7 @@
 class DoorListing < ApplicationRecord
-  validates :skid_up, :deliver, :date_required, presence: true
+  validates :date_required, presence: true
 
   belongs_to :order
+
+  has_one :doors
 end

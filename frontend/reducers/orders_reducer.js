@@ -5,7 +5,7 @@ const ordersReducer = (state = {}, action) => {
   switch (action.type) {
     case RECEIVE_ORDER:
       return Object.assign({}, state, {
-        [action.order.id]: action.order
+        [action.payload.order.id]: action.payload.order
       });
     case RECEIVE_ORDERS:
       return action.orders

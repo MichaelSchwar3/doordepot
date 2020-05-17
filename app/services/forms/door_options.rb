@@ -7,6 +7,8 @@ class Forms::DoorOptions
       hinges: Door.hinges,
       locksets: Door.locksets,
       types: Door.types,
+      hinge_sizes: Door.hinge_sizes,
+      hinge_backsets: Door.hinge_backsets,
     }
   end
 end

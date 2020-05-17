@@ -98,7 +98,8 @@ class DoorListingForm extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  errors: state.errors
+  errors: state.errors,
+  listing: state.entities.doorListing
 });
 
 const mapDispatchToProps = dispatch => ({

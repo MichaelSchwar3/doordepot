@@ -66,6 +66,21 @@ class Door < ApplicationRecord
     'Flush'
   ].freeze
 
+  HINGE_SIZES = [
+    '4.5',
+    '5',
+    '6',
+    '7',
+    'None',
+    'Piano',
+  ].freeze
+
+  HINGE_BACKSETS = [
+    'Standard (1/16)',
+    'A/L Hinge (3/16)',
+    'Heavy (5/32)',
+  ].freeze
+
   def self.types
     TYPES
   end
@@ -88,5 +103,13 @@ class Door < ApplicationRecord
 
   def self.channel_types
     CHANNEL_TYPES
+  end
+
+  def self.hinge_sizes
+    HINGE_SIZES
+  end
+
+  def self.hinge_backsets
+    HINGE_BACKSETS
   end
 end

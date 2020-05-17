@@ -7,7 +7,7 @@ export const RECEIVE_ORDER_ERRORS = "RECEIVE_ORDER_ERRORS";
 export const receiveOrder = order => {
   return {
     type: RECEIVE_ORDER,
-    order
+    payload: order
   };
 };
 

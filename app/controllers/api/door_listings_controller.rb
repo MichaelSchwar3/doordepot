@@ -5,10 +5,11 @@ class Api::DoorListingsController < ApplicationController
     @door_listing = DoorListing.new(door_listings_params)
     # binding.pry
     @door_listing.date_required = date_required
+    binding.pry
     if @door_listing.save
       render 'api/door_listings/show'
     else
-      render json: ['Invalid Input. Please try again.'], status: 401
+      render json: @door_listing.errors.full_messages, status: 401
     end
   end
 

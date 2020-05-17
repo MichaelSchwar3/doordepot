@@ -1,32 +1,43 @@
-class Api::SessionsController < ApplicationController
+class Api::DoorOrdersController < ApplicationController
 
-  # def create
-  #   @user = User.find_by_credentials(
-  #     params[:user][:email],
-  #     params[:user][:password]
-  #   )
-  #   if @user
-  #     login!(@user)
-  #     render 'api/users/show'
-  #   else
-  #     render json: ['Invalid credentials. Please try again.'], status: 401
-  #   end
-  # end
+  def create
+    @doors = Doors::CreateDoors.create(door_order_params)
+    # @doors = Door.new(door_order_params)
+    if @user
+      login!(@user)
+      render 'api/users/show'
+    else
+      render json: ['Invalid credentials. Please try again.'], status: 401
+    end
+  end
 
-  # def destroy
-  #   if logout!
-  #     render json: {}
-  #   else
-  #     render json: ['No current user'], status: 404
-  #   end
-  # end
-
-
-  # # def door_order_params
-  # #   params.require(:door_order).permit(
-  # #     :lhTags,
-  # #   )
-  # # end
+  def door_order_params
+    params.require(:door_order)
+      .transform_keys(&:underscore)
+      .permit(
+        :lh_tags
+        :rh_tags,
+        :lh_quantity,
+        :rh_quantity,
+        :so,
+        :frame_type,
+        :width_feet,
+        :width_inches,
+        :height_feet,
+        :height_inches,
+        :undercut,
+        :channel_top,
+        :channel_bottom,
+        :type,
+        :construction,
+        :hinges,
+        :locksets,
+        :prep_only,
+        :seamless,
+        :reference_number,
+        :door_listing_id
+      )
+  end
 
   # private
   #   def user_params

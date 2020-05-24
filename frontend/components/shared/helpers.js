@@ -36,7 +36,6 @@ export const customFixedStyles = {
     width: 240,
     height: '35px',
     'min-height': '35px',
-    marginLeft: 70,
     cursor: 'pointer'
   }),
   valueContainer: provided => ({
@@ -130,7 +129,6 @@ const secondHingeDoor = (hingeSize, height) => {
 }
 
 const thirdHingeDoor = (hingeSize, height) => {
-  console.log(trueHeight(height))
   return hingeSize === '4.5' ? 
     trueHeight(height) - 14.625 :
     (Math.floor(trueHeight(height) - 15.125)) - 0.125
@@ -145,4 +143,69 @@ const trueHeight = (height) => {
 const oversizedHingeHelper = (hingeNumber, hingeSize, height) => {
   if(hingeSize === '4.5') return overSizedFour[hingeNumber - 2][trueHeight(height)]
   return overSizedFive[hingeNumber - 2][trueHeight(height)]
+}
+
+export const calculateCsLocation = (height, lockset, frameType) => {
+  if(height == 0 || lockset === '' || frameType === '') { return '' }
+  if(['Hinges Only','Panic Bar','Inactive','SVR'].includes(lockset) || height == 0 ) { return '' }
+  if(frameType === 'A/L') { return alCsLocation(height) }
+  let offset = 38.125
+  if(['Panic & Trim', 'SVR & Trim','Mortise Panic'].includes(lockset)){
+    offset = 40.124
+  }
+  return height - offset;
+
+}
+
+const alCsLocation = (height) => {
+  if(height >= 78 && height < 82 ) { return 41.875 }
+  if(height >= 82 && height < 86 ) { return 45.875 }
+  
+  return '';
+}
+
+export const calculateLockLocation = (csLocation, lockset) => {
+  if(csLocation === '' || lockset === '') { return '' }
+  if(['161 Lock', 'DBL 161 Lock'].includes(lockset)) { return csLocation - 1.125 }
+  if(['Apartment', 'Mortise Lock', '86 Edge'].includes(lockset)) { 
+    return csLocation - 3.625
+  }
+  if(lockset === '91A') { return csLocation - 3.25 }
+
+  return ''
+}
+
+export const calculateLockSizeWidth = (lockset) => {
+ const sizes =  {
+   '161 Lock': 1.125,
+   'DBL 161 Lock': 1.125,
+   '86 Edge': 1.25,
+   'Apartment': 1.25,
+   'Mortise Lock': 1.25,
+   'Mortise Panic': 1.25,
+   '91A': 1.062
+  }
+  if(sizes[lockset]) { return sizes[lockset] }
+
+  return ''
+}
+
+export const calculateLockSizeHeight = (lockset) => {
+  const sizes = {
+    '161 Lock': 2.25,
+    'DBL 161 Lock': 2.25,
+    '86 Edge': 8,
+    'Apartment': 8,
+    'Mortise Lock': 8,
+    'Mortise Panic': 8,
+    '91A': 7.625,
+  };
+  if (sizes[lockset]) { return sizes[lockset];}
+
+  return '';
+};
+
+export const calculateTopCsLocation = (lockset, csLocation) => {
+  if(csLocation === '' || lockset !== 'DBL 161 Lock') return ''
+  return csLocation - 10;
 }

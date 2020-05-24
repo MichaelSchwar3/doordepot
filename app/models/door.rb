@@ -81,6 +81,20 @@ class Door < ApplicationRecord
     'Heavy (5/32)',
   ].freeze
 
+  TOP_LOCK_WIDTHS = [
+    '1',
+    '1.25',
+    '1.125'
+].freeze
+
+  TOP_LOCK_HEIGHTS = [
+    '4.625',
+    '3.5',
+    '2.75',
+    '2.125',
+    '2.25',
+].freeze
+
   def self.types
     TYPES
   end
@@ -111,5 +125,13 @@ class Door < ApplicationRecord
 
   def self.hinge_backsets
     HINGE_BACKSETS
+  end
+
+  def self.second_ls_heights
+    TOP_LOCK_HEIGHTS
+  end
+
+  def self.second_ls_widths
+    TOP_LOCK_WIDTHS
   end
 end

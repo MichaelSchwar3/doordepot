@@ -28,7 +28,6 @@ class DoorListingForm extends React.Component {
   }
 
   handleDateChange(date) {
-    console.log(date)
     this.setState({
       dateRequired: date
     });

@@ -9,6 +9,8 @@ class Forms::DoorOptions
       types: Door.types,
       hinge_sizes: Door.hinge_sizes,
       hinge_backsets: Door.hinge_backsets,
+      second_ls_heights: Door.second_ls_heights,
+      second_ls_widths: Door.second_ls_widths,
     }
   end
 end

@@ -1,11 +1,8 @@
 class Api::DoorListingsController < ApplicationController
 
   def create
-    # binding.pry
     @door_listing = DoorListing.new(door_listings_params)
-    # binding.pry
     @door_listing.date_required = date_required
-    binding.pry
     if @door_listing.save
       render 'api/door_listings/show'
     else
@@ -19,7 +16,7 @@ class Api::DoorListingsController < ApplicationController
   end
 
   def show
-    @order = Order.find(params[:id])
+    @order = DoorListing.find(params[:id])
     render 'api/orders/show'
   end
 

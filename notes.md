@@ -140,7 +140,80 @@ if height is 95-96
     81.5
 
 
+Actual Width
+
+=IF(AND(N16<>"",P16<>"",R16<>"",T16<>""),IF(AND(E16="",G16=""),"",IF(AND(AJ16="H/S Cont.",N16+P16>0,K16<>"",K16="A/L"),SUM(N16*12+P16-0.5),IF(AND(AJ16="H/S Cont.",N16+P16>0,K16<>""),SUM(N16*12+P16-0.375),IF(AND(AJ16="F/M Cont.",K16="A/L",N16+P16>0),SUM(N16*12+P16-0.625),IF(AND(AJ16="F/M Cont.",K16<>"A/L",K16<>"",N16+P16>0),SUM(N16*12+P16-0.5),IF(AND(N16+P16>0,K16="A/L"),SUM(N16*12+P16-0.375),SUM(N16*12+P16-0.25))))))),"")
+
+If quantity, width or height is empty, return nothing
+
+If hinges == H/S Cont. and Frame type == A/L
+  return width - 0.5
+
+If hinges == H/S cont. and not A/L
+  return width - 0.375
+
+if hinges = F/M Cont. and A/L
+  return width - 0.625
+
+if hinges = F/M cont. and not A/L
+  return width -0.5
+
+If A/L
+  return width - 0.375
+
+Else
+  return width - 0.25
 
 
 
+Actual Height
+
+=IF(AND(N16<>"",P16<>"",R16<>"",T16<>""),IF(AND(E16="",G16=""),"",IF(AND(R16+T16<>""),IF(AND(K16="A/L",V16="",R16<>"",T16<>""),SUM(R16*12+T16-0.625),IF(AND(K16="A/L",V16<>"",R16<>"",T16<>""),R16*12+T16-V16-1/4,IF(AND(K16<>"A/L",R16<>"",T16<>"",V16=""),R16*12+T16-0.875,IF(AND(K16<>"A/L",R16<>"",T16<>"",V16<>""),R16*12+T16-V16-0.125,"")))))),"")
+
+
+If quantity, width or height is empty, return nothing
+
+If A/L with no undercut
+  return height - 0.625
+If A/L with undercut
+  return height - undercut - 0.25
+If not A/L and no undercut
+  return height - 0.875
+If not A/L and undercut
+  return height - undercut - 0.125
+
+
+
+Wide Side width
+
+=IF(OR(AW16="",AC16=""),"",IF(OR(AC16="16 FLUSH",AC16="16 VISION",AC16="16 PANEL",AC16="16 LOUVER",AC16="16 MISC."),SUM(AW16+4.688-0.125),IF(OR(AW16="",AC16=""),"",IF(OR(AC16="KL FLUSH",AC16="KL VISION",AC16="KL PANEL",AC16="KL LOUVER",AC16="KL MISC."),SUM(AW16+5),(SUM(AW16+4.688))))))
+
+If door Type || actual width == 0 
+  return ""
+
+If door type is 16 Flush, 16 Vision, 16 Panel, 16 Louver, 16 Misc
+  Return actual width + 4.688-0.125
+
+If KL Flush, KL Vision, KL Panel KL Louver
+  return Actual width + 5
+
+Else Actual width + 4.688
+
+
+Wide Side Height
+
+If door Type || actual width == 0 
+  return ""
+
+If KL Flush, KL Vision, KL Panel KL Louver
+  return Actual Height + 3
+
+else actual height
+
+
+Narrow side Width
+
+Wide Side Width - 4
+
+Wide Side Height
 

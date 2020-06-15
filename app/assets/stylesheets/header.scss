@@ -89,7 +89,7 @@ header img{
   font-weight: normal;
 }
 
-#routes, #workouts, #friends{
+#routes, #workouts, #friends, #recent-orders{
   position: relative;
 }
 
@@ -98,6 +98,7 @@ header img{
   display: none;
   position: absolute;
   width: 160px;
+  top: 40px;
   left: -1px;
   font-size: 14px;
   white-space: nowrap;
@@ -107,7 +108,7 @@ header img{
   overflow: hidden;
 }
 
-#routes:hover .header-notifications {
+#recent-orders:hover .header-notifications {
   display: block;
 }
 

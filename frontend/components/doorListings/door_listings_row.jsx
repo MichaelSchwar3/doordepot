@@ -2,26 +2,53 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../util/date_util";
 
+import styled from "styled-components";
+
+const Row = styled.div`
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  background: ${props => props.color % 2 === 0 ? "#ddd" : "#eee"}
+`;
+
+
 const DoorListingRow = props => {
   if (!props.doorListing) return null;
-  const doorListing = props.doorListing;
+  const { doorListing, door } = props;
+  const url = doorListing.doorId
+    ? `/doorListings/${doorListing.id}/door/${door.id}`
+    : `/doorListings/${doorListing.id}/create`;
+
   return (
-    <div id="workout-item">
-      <Link to={`/doorListings/${doorListing.id}`}>
-        <h1>Door Listing</h1><br/>
-        <div id="workout-item-front">
-          <span>
-            Skid Up: {doorListing.skidUp ? "True" : "False"}
-          </span>
-          <span>
-            Deliver: {doorListing.deliver ? "True" : "False"}
-          </span>
-          <span>Created at: {formatDate(doorListing.createdAt)}</span>
-          <span>Date Required: {doorListing.dateRequired ? formatDate(doorListing.dateRequired) : "No date"}</span>
+    <Link to={url}>
+      <Row color={doorListing.id}>
+        <div>Door Line</div>
+        <div>{doorListing.skidUp ? "True" : "False"}</div>
+        <div>{doorListing.deliver ? "True" : "False"}</div>
+        <div>{formatDate(doorListing.createdAt)}</div>
+        <div>
+          {doorListing.dateRequired
+            ? formatDate(doorListing.dateRequired)
+            : "No date"}
         </div>
-      </Link>
-    </div>
+        <div>{door && door.lhQuantity ? door.lhQuantity : ""}</div>
+        <div>{door && door.rhQuantity ? door.rhQuantity : ""}</div>
+        <div>
+          {door && door.heightFeet
+            ? `${door.heightFeet} - ${door.heightInches}`
+            : ""}
+        </div>
+        <div>
+          {door && door.widthFeet
+            ? `${door.widthFeet} - ${door.widthInches}`
+            : ""}
+        </div>
+        <div>{door && door.doorType ? door.doorType : ""}</div>
+        <div>{door && door.frameType ? door.frameType : ""}</div>
+      </Row>
+    </Link>
   );
 };
 
 export default DoorListingRow;
+
+

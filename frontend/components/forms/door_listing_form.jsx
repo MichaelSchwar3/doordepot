@@ -17,12 +17,14 @@ class DoorListingForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit() {
+
     const submit = async () => {
+      const orderId = this.props.match.params.orderId;
       const doorListing = Object.assign({}, this.state, {
-        orderId: this.props.match.params.orderId
+        orderId: orderId,
       });
       await this.props.submitDoorListing(doorListing);
-      this.props.history.push("/orders");
+      this.props.history.push(`/orders/${orderId}`);
     };
     submit();
   }

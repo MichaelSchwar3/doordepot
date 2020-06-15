@@ -19,7 +19,8 @@ const App = () => (
     <ProtectedRoute exact path="/orders/create" component={OrderForm} />
     <ProtectedRoute exact path="/orders/:orderId/" component={Order} />
     <ProtectedRoute exact path="/orders/:orderId/doorListings/create/" component={DoorListingForm} />
-    <ProtectedRoute exact path="/doorListings/:doorListingId" component={DoorOrderForm} />
+    <ProtectedRoute exact path="/doorListings/:doorListingId/create" component={DoorOrderForm} />
+    <ProtectedRoute exact path="/doorListings/:doorListingId/door/:doorId" component={DoorOrderForm} />
     {/* <Switch> */}
     {/* <ProtectedRoute path="/cards/new" component={CardForm} /> */}
     {/* <ProtectedRoute path="/cards" component={CardIndex} /> */}

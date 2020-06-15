@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_23_170924) do
+ActiveRecord::Schema.define(version: 2020_05_31_005121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,12 +39,9 @@ ActiveRecord::Schema.define(version: 2020_05_23_170924) do
     t.integer "rh_quantity"
     t.boolean "so", default: false
     t.string "frame_type"
-    t.integer "width"
-    t.integer "height"
     t.integer "undercut"
     t.string "channel_top"
     t.string "channel_bottom"
-    t.string "type"
     t.string "construction"
     t.string "hinges"
     t.string "lockset"
@@ -65,6 +62,21 @@ ActiveRecord::Schema.define(version: 2020_05_23_170924) do
     t.float "fourth_hinge"
     t.float "cs_location"
     t.float "lock_location"
+    t.integer "height_inches"
+    t.integer "height_feet"
+    t.integer "width_inches"
+    t.integer "width_feet"
+    t.string "hinge_backset"
+    t.string "hinge_size"
+    t.string "hinge_width"
+    t.string "lock_backset"
+    t.float "lock_size_height_bot"
+    t.float "lock_size_height_top"
+    t.float "lock_size_width_bot"
+    t.float "lock_size_width_top"
+    t.float "top_cs_location"
+    t.float "top_lock_location"
+    t.string "door_type"
   end
 
   create_table "orders", force: :cascade do |t|

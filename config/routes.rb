@@ -6,13 +6,16 @@ Rails.application.routes.draw do
     resources :users, only: [:create, :show, :update]
     resource :session, only: [:create, :destroy]
     resources :door_orders, only: [:create, :index]
-    resources :door_listings, only: [:index, :create, :update]
+    resources :door_listings, only: [:index, :create, :update] do
+      resources :doors, only: [:create, :index]
+    end
     resources :orders, only: [:create, :index, :show]
     resources :forms do
       collection do
         get :door
       end
     end
+    resources :doors, only: [:show]
   end
 
 end

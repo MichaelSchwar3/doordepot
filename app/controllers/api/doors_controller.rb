@@ -1,24 +1,27 @@
-json.key_format! camelize: :lower
+class Api::DoorsController < ApplicationController
 
+  def show
+    # binding.pry
+    @door = Door.find(params[:id])
 
-json.set! 'order' do
-  json.extract! @order, :id, :po_number, :phone_number, :order_number, :created_at, :updated_at
-  json.extract! @order.account, :name
-end
+  end
 
-json.set! 'doorListings' do
-  @order.door_listings.each do |doorListing|
-    json.set! doorListing.id do
-      json.extract! doorListing, :id, :skid_up, :deliver, :date_required, :date_completed, :created_at, :updated_at, :order_id
-      json.doorId doorListing.door.present? ? doorListing.door.id : nil
+  def create
+    #@doors = Doors::CreateDoors.create(door_order_params)
+    # binding.pry
+    @door = Door.new(door_order_params)
+    @door.door_listing_id = params[:door_listing_id]
+    if @door.save
+      render 'api/doors/show'
+    else
+      render json: @doors.erros.full_messages, status: 401
     end
   end
-end
 
-json.set! 'doors' do
-  @order.doors.each do |door|
-    json.set! door.id do
-      json.extract! door, :id,
+  def door_order_params
+    params.require(:door)
+      .transform_keys(&:underscore)
+      .permit(
         :actual_height,
         :actual_width,
         :channel_bottom,
@@ -58,10 +61,12 @@ json.set! 'doors' do
         :width_feet,
         :width_inches,
         :ws_height,
-        :ws_width,
-        :created_at,
-        :updated_at,
-        :door_listing_id
-    end
+        :ws_width
+      )
   end
+
+  # private
+  #   def user_params
+  #       params.require(:user).permit(:email, :password, :fname, :lname, :password)
+  #   end
 end

@@ -7,8 +7,10 @@ class Doors::CreateDoor
     @door = Door.new(door_params)
   end
 
-  def generate_order_number
-    account_name + number
+  def build
+    set_height
+    set_width
+    
   end
 
   private

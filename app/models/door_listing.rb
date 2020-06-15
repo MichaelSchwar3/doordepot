@@ -3,5 +3,5 @@ class DoorListing < ApplicationRecord
 
   belongs_to :order
 
-  has_one :doors
+  has_one :door
 end

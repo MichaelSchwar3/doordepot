@@ -1,24 +1,5 @@
 json.key_format! camelize: :lower
-
-
-json.set! 'order' do
-  json.extract! @order, :id, :po_number, :phone_number, :order_number, :created_at, :updated_at
-  json.extract! @order.account, :name
-end
-
-json.set! 'doorListings' do
-  @order.door_listings.each do |doorListing|
-    json.set! doorListing.id do
-      json.extract! doorListing, :id, :skid_up, :deliver, :date_required, :date_completed, :created_at, :updated_at, :order_id
-      json.doorId doorListing.door.present? ? doorListing.door.id : nil
-    end
-  end
-end
-
-json.set! 'doors' do
-  @order.doors.each do |door|
-    json.set! door.id do
-      json.extract! door, :id,
+json.extract! @door, :id,
         :actual_height,
         :actual_width,
         :channel_bottom,
@@ -62,6 +43,3 @@ json.set! 'doors' do
         :created_at,
         :updated_at,
         :door_listing_id
-    end
-  end
-end

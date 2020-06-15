@@ -27,9 +27,9 @@ class Door < ApplicationRecord
 
   HINGES = [
     'Hinge Prep',
-    'F/M Continuous',
-    'H/S Construction',
-    'F/S Construction',
+    'F/M Cont.',
+    'H/S Cont.',
+    'F/S Cont.',
     '26D Spring',
     'P. BB',
     '26D BB',

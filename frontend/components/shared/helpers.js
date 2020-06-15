@@ -209,3 +209,73 @@ export const calculateTopCsLocation = (lockset, csLocation) => {
   if(csLocation === '' || lockset !== 'DBL 161 Lock') return ''
   return csLocation - 10;
 }
+
+export const calculateLockBackset = (lockset) => {
+  if(lockset === '161 Lock') { return "B/S: 57/64"; }
+  if(['Apartment', 'Mortise Lock', '86 Edge'].includes(lockset)) { return "B/S: 27/32";}
+  if(lockset === '91A') { return "B/S: 1 1/32"; }
+  return ""
+}
+
+export const calculateHingeBackset = (hingeSize) => {
+  if(hingeSize === "4.5" || hingeSize === "5") { return "B/S: 69/85" }
+  if(hingeSize === "6") { return "B/S: 1 9/64" }
+  if(hingeSize === "7") { return "B/S: 1 17/64" }
+  return "";
+}
+
+export const calculateActualHeight = (height, undercut, frameType) => {
+  if (height === 0 || frameType === "") return "";
+  if (frameType === "A/L") {
+    if (undercut !== "") {
+      return height - undercut - 0.25;
+    }
+    return height - 0.625;
+  }
+  if (undercut !== "") {
+    return height - undercut - 0.125;
+  }
+  return height - 0.875;
+};
+
+export const calculateActualWidth = (width, hingeType, frameType) => {
+  if (width === 0 || frameType === "" || hingeType === ""){ return ""; }
+
+  if (frameType === "A/L") {
+    if (hingeType === "H/S Cont.") {
+      return width - 0.5;
+    }
+    if (hingeType === "F/M Cont.") {
+      return width - 0.625;
+    }
+    return width - 0.375;
+  }
+  if (hingeType !== "H/S Cont.") {
+    return width - 0.375;
+  }
+  if (hingeType === "F/M Cont.") {
+    return width - 0.5;
+  }
+  return width - 0.25;
+};
+
+export const calculateWideSideWidth = (doorType, actualWidth) => {
+  if(doorType === "" || actualWidth === "") { return "" }
+
+  if(["16 Flush", "16 Vision", "16 Panel", "16 Louver", "16 Misc"].includes(doorType)){
+    return actualWidth + 4.688 - 0.125;
+  }
+  if(["KL Flush", "KL Vision", "KL Panel", "KL Louver"].includes(doorType)){
+    return actualWidth + 5;
+  }
+  return actualWidth + 4.688
+}
+
+export const calculateWideSideHeight = (doorType, actualHeight) => {
+  if(doorType === "" || actualHeight === "") { return "" }
+
+  if(["KL Flush", "KL Vision", "KL Panel", "KL Louver"].includes(doorType)){
+    return actualHeight + 3;
+  }
+  return actualHeight
+}

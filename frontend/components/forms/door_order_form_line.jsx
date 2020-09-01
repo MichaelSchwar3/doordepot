@@ -143,7 +143,7 @@ const ColumnTitle = styled.div`
 `;
 
 
-class DoorOrderForm extends React.Component {
+class DoorOrderFormLine extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -194,20 +194,20 @@ class DoorOrderForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    const fetchFormOptions = async () => {
-      await this.props.fetchFormOptions();
-      this.setState({ fetching: false });
-      this.initialCalculations()
-    };
-    const fetchDoor = async () => {
-      await this.props.fetchDoor();
-      await this.setState({ ...this.props.door });
-      this.initialCalculations();
-    };
-    if(this.props.doorId) { fetchDoor() };
-    fetchFormOptions();
-  }
+  // componentDidMount() {
+  //   const fetchFormOptions = async () => {
+  //     await this.props.fetchFormOptions();
+  //     this.setState({ fetching: false });
+  //     this.initialCalculations()
+  //   };
+  //   const fetchDoor = async () => {
+  //     await this.props.fetchDoor();
+  //     await this.setState({ ...this.props.door });
+  //     this.initialCalculations();
+  //   };
+  //   if (this.props.doorId) { fetchDoor() };
+  //   fetchFormOptions();
+  // }
 
   componentDidUpdate(_, prevState) {
     const { frameType } = this.state;
@@ -269,7 +269,7 @@ class DoorOrderForm extends React.Component {
       return true;
     }
     if (prevState.doorType !== newState.doorType) {
-      return  true;
+      return true;
     }
     return false;
   }
@@ -478,29 +478,6 @@ class DoorOrderForm extends React.Component {
 
     return (
       <>
-        <Container>
-          <Row>
-            <ColumnTitle> Letter Ref.</ColumnTitle>
-            <ColumnTitle> LH Quantity</ColumnTitle>
-            <ColumnTitle> RH Quantity</ColumnTitle>
-            <ColumnTitle> S/O</ColumnTitle>
-            <ColumnTitle> Frame Type</ColumnTitle>
-            <ColumnTitle> Width Feet</ColumnTitle>
-            <ColumnTitle> Width Inches</ColumnTitle>
-            <ColumnTitle> Height Feet</ColumnTitle>
-            <ColumnTitle> Height Inches</ColumnTitle>
-            <ColumnTitle> Undercut</ColumnTitle>
-            <ColumnTitle> Channel Top</ColumnTitle>
-            <ColumnTitle> Channel Bottom</ColumnTitle>
-            <ColumnTitle> Door Type</ColumnTitle>
-            <ColumnTitle> Door Const.</ColumnTitle>
-            <ColumnTitle> Hinges</ColumnTitle>
-            <ColumnTitle> Lockset</ColumnTitle>
-            <ColumnTitle> Prep Only</ColumnTitle>
-            <ColumnTitle> Seamless</ColumnTitle>
-            <ColumnTitle> Actual Size Width</ColumnTitle>
-            <ColumnTitle> Actual Size Height</ColumnTitle>
-          </Row>
           <LeftSection>
             <Label>
               <div>A</div>
@@ -689,244 +666,7 @@ class DoorOrderForm extends React.Component {
             </Label>
 
           </LeftSection>
-            <SubmitButton onClick={this.handleSubmit}> {this.props.door && this.props.door.id ? "Update" : "Submit"} </SubmitButton>
-          <RightSection>
-            <PreviewContainer>
-              <DoorImage src={window.doorUrl} />
-              <HingeInput
-                top={"-7px"}
-                type="number"
-                value={this.state.firstHinge}
-                onChange={this.update("firstHinge")}
-                disabled={!this.state.hingeOverRide}
-              />
-              <HingeInput
-                top={"73px"}
-                type="number"
-                value={this.state.secondHinge}
-                onChange={this.update("secondHinge")}
-                disabled={!this.state.hingeOverRide}
-              />
-              <HingeInput
-                top={"154px"}
-                type="number"
-                value={this.state.thirdHinge}
-                onChange={this.update("thirdHinge")}
-                disabled={!this.state.hingeOverRide}
-              />
-              <HingeInput
-                top={"256px"}
-                type="number"
-                value={this.state.fourthHinge}
-                onChange={this.update("fourthHinge")}
-                disabled={!this.state.hingeOverRide}
-              />
-              <BacksetInput
-                top={"295px"}
-                left={"408px"}
-                type="text"
-                value={this.state.hingeBackset}
-                onChange={this.update("hingeBackset")}
-                disabled={!this.state.hingeOverRide}
-              />
-
-              <LockInput
-                top={"141px"}
-                type="number"
-                value={this.state.lockLocation}
-                onChange={this.update("lockLocation")}
-                disabled={!this.state.hingeOverRide}
-              />
-              <LockInput
-                top={"75px"}
-                type="number"
-                value={this.state.topLockLocation}
-                onChange={this.update("topLockLocation")}
-                disabled={!this.state.hingeOverRide}
-              />
-              <BacksetInput
-                top={"192px"}
-                left={"105px"}
-                type="text"
-                value={this.state.lockBackset}
-                onChange={this.update("lockBackset")}
-                disabled={!this.state.hingeOverRide}
-              />
-
-              <FlexDiv>
-                <HalfFixedLabel>Hinge Size</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Select
-                    styles={customFixedStyles}
-                    options={processForSelect(formOptions.hinge_sizes)}
-                    onChange={this.updateSelect("hingeSize")}
-                    value={find(
-                      processForSelect(formOptions.hinge_sizes),
-                      (obj) => obj.value === this.state.hingeSize
-                    )}
-                    isSearchable={false}
-                  />
-                </HalfFixedLabel>
-                <span> X </span>
-                <HalfFixedLabel>
-                  <Select
-                    styles={customFixedStyles}
-                    options={processForSelect(formOptions.hinge_backsets)}
-                    onChange={this.updateSelect("hingeWidth")}
-                    value={find(
-                      processForSelect(formOptions.hinge_backsets),
-                      (obj) => obj.value === this.state.hingeWidth
-                    )}
-                    isSearchable={false}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>CS Location - 1st Lock</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.csLocation}
-                    onChange={this.update("csLocation")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>1st Lock Size</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.lockSizeWidthBot}
-                    onChange={this.update("lockSizeWidthBot")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-                <HalfFixedLabel> X </HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.lockSizeHeightBot}
-                    onChange={this.update("lockSizeHeightBot")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>CS Location - 2nd Lock</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.topCsLocation}
-                    onChange={this.update("topCsLocation")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>2nd Lock Size</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Select
-                    styles={customFixedStyles}
-                    options={processForSelect(formOptions.second_ls_widths)}
-                    onChange={this.updateSelect("lockSizeWidthTop")}
-                    value={find(
-                      processForSelect(formOptions.second_ls_widths),
-                      (obj) => obj.value === this.state.lockSizeWidthTop
-                    )}
-                    isSearchable={false}
-                    menuPlacement="top"
-                  />
-                </HalfFixedLabel>
-                <HalfFixedLabel> X </HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Select
-                    styles={customFixedStyles}
-                    options={processForSelect(formOptions.second_ls_heights)}
-                    onChange={this.updateSelect("lockSizeHeightTop")}
-                    value={find(
-                      processForSelect(formOptions.second_ls_heights),
-                      (obj) => obj.value === this.state.lockSizeHeightTop
-                    )}
-                    isSearchable={false}
-                    menuPlacement="top"
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>Actual Width</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.actualWidth}
-                    onChange={this.update("actualWidth")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>Actual Height</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.actualHeight}
-                    onChange={this.update("actualHeight")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>Wide Side</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="number"
-                    value={this.state.wsWidth}
-                    onChange={this.update("wsWidth")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-                <HalfFixedLabel> X </HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.wsHeight}
-                    onChange={this.update("wsHeight")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-              <FlexDiv>
-                <HalfFixedLabel>Narrow Side</HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="number"
-                    value={this.state.nsWidth}
-                    onChange={this.update("nsWidth")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-                <HalfFixedLabel> X </HalfFixedLabel>
-                <HalfFixedLabel>
-                  <Input
-                    type="text"
-                    value={this.state.nsHeight}
-                    onChange={this.update("nsHeight")}
-                    className="door-listing-input"
-                    disabled={true}
-                  />
-                </HalfFixedLabel>
-              </FlexDiv>
-            </PreviewContainer>
-          </RightSection>
+         
           <div>
             {/* TODO */}
             <Label>
@@ -948,14 +688,13 @@ class DoorOrderForm extends React.Component {
               />
             </Label>
           </div>
-        </Container>
       </>
     );
   }
 
   render() {
     if (this.state.fetching) return null;
-  
+
     return (
       <div className="door-order-form-container">
         {this.doorInputs()}
@@ -979,4 +718,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   fetchDoor: () => dispatch(fetchDoor(ownProps.match.params.doorId))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DoorOrderForm);
+export default DoorOrderFormLine;

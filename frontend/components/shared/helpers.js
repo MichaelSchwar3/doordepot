@@ -1,3 +1,5 @@
+import { NonceProvider } from "react-select";
+
 export const processForSelect = (labels) => {
   return labels.map( label => {
     return {label: label, value: label}
@@ -7,10 +9,10 @@ export const processForSelect = (labels) => {
 export const customStyles = {
   container: provided => ({
     ...provided,
-    width: 265,
+    width: 50,
     height: '35px',
+    padding: 0,
     'min-height': '35px',
-    marginLeft: 5,
     cursor: 'pointer'
   }),
   valueContainer: provided => ({
@@ -22,19 +24,26 @@ export const customStyles = {
     ...provided,
     height: '35px',
     'min-height': '35px',
+    'border-radius': 0,
+    border: '1px solid black'
   }),
   indicatorsContainer: provided => ({
     ...provided,
     height: '35px',
     'min-height': '35px',
+  }),
+  menu: provided => ({
+    ...provided,
+    width: 100,
   })
 };
 
 export const customFixedStyles = {
   container: provided => ({
     ...provided,
-    width: 240,
+    width: 50,
     height: '35px',
+    padding: 0,
     'min-height': '35px',
     cursor: 'pointer'
   }),
@@ -47,11 +56,17 @@ export const customFixedStyles = {
     ...provided,
     height: '35px',
     'min-height': '35px',
+    'border-radius': 0,
+    border: '1px solid black'
   }),
   indicatorsContainer: provided => ({
     ...provided,
     height: '35px',
     'min-height': '35px',
+  }),
+  menu: provided => ({
+    ...provided,
+    width: 100,
   })
 };
 

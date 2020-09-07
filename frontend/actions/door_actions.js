@@ -25,9 +25,9 @@ export const receiveDoorErrors = (errors) => {
   };
 };
 
-export const submitDoor = (door, doorListingId) => (dispatch) =>
-  APIUtil.submitDoor(door, doorListingId).then(
-    (door) => dispatch(receiveDoor(door)),
+export const submitDoor = (doors, doorListingId) => (dispatch) =>
+  APIUtil.submitDoor(doors, doorListingId).then(
+    (doors) => dispatch(receiveDoors(doors)),
     (err) => dispatch(receiveErrors(err.responseJSON))
   );
 

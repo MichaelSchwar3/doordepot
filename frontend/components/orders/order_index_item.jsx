@@ -15,7 +15,7 @@ const OrderIndexItem = props => {
     <Link to={`/orders/${order.id}`}>
       <Row>
         <span>
-          Order Number {order.orderNumber} - PO# - {order.poNumber}
+          Order Number {order.orderNumber} {order.poNumber ? ` - PO# - ${order.poNumber}` : ""}
         </span>
         <span>{formatDate(order.createdAt)}</span>
       </Row>

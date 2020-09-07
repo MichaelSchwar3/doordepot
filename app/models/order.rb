@@ -4,5 +4,5 @@ class Order < ApplicationRecord
 
   has_many :door_listings
 
-  has_many :doors, through: :door_listings, source: :door
+  has_many :doors, through: :door_listings, source: :doors
 end

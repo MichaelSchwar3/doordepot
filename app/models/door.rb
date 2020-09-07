@@ -95,12 +95,32 @@ class Door < ApplicationRecord
     '2.25',
 ].freeze
 
+  DOOR_ELEVATIONS = [
+    'NARROW V.L.',
+    'SQUARE V.L.',
+    'RECTANGLE V.L.',
+    'FULL V.L.',
+    'DOUBLE V.L.',
+    'SQUARE LOUVER',
+    'RECTANGLE LOUVER',
+    'FULL LOUVER',
+    'VISION / LOUVER',
+    '1 PANEL',
+    '2 PANEL',
+    '4 PANEL',
+    '6 PANEL',
+].freeze
+
   def self.types
     TYPES
   end
 
   def self.constructions
     CONSTRUCTIONS
+  end
+
+  def self.door_elevations
+    DOOR_ELEVATIONS
   end
 
   def self.hinges

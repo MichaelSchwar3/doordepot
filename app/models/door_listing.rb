@@ -1,7 +1,7 @@
 class DoorListing < ApplicationRecord
-  validates :date_required, presence: true
+  validates :page_number, presence: true
 
   belongs_to :order
 
-  has_one :door
+  has_many :doors
 end

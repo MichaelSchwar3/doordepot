@@ -1,8 +1,9 @@
 class Api::DoorListingsController < ApplicationController
 
   def create
-    @door_listing = DoorListing.new(door_listings_params)
-    @door_listing.date_required = date_required
+    order = Order.find(door_listings_params.to_i)
+    page_number = order.door_listings.length + 1
+    @door_listing = DoorListing.new(order_id: order.id, page_number: page_number)
     if @door_listing.save
       render 'api/door_listings/show'
     else
@@ -22,13 +23,7 @@ class Api::DoorListingsController < ApplicationController
 
   private
 
-  def date_required
-    params[:doorListing][:dateRequired].to_date
-  end
-
   def door_listings_params
     params.require(:doorListing)
-      .transform_keys(&:underscore)
-      .permit(:skid_up, :deliver, :order_id)
   end
 end

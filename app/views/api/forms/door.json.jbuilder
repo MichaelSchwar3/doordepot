@@ -1,1 +1,1 @@
-json.extract! @options, :frame_types, :constructions, :channels, :locksets, :types, :hinges, :hinge_sizes, :hinge_backsets, :second_ls_heights, :second_ls_widths
+json.extract! @options, :frame_types, :constructions, :channels, :door_elevations, :locksets, :types, :hinges, :hinge_sizes, :hinge_backsets, :second_ls_heights, :second_ls_widths

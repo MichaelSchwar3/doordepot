@@ -4,6 +4,7 @@ class Forms::DoorOptions
       frame_types: Door.frame_types,
       constructions: Door.constructions,
       channels: Door.channel_types,
+      door_elevations: Door.door_elevations,
       hinges: Door.hinges,
       locksets: Door.locksets,
       types: Door.types,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_31_005121) do
+ActiveRecord::Schema.define(version: 2020_09_07_190614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,13 +22,10 @@ ActiveRecord::Schema.define(version: 2020_05_31_005121) do
   end
 
   create_table "door_listings", force: :cascade do |t|
-    t.boolean "skid_up", default: false
-    t.boolean "deliver", default: false
-    t.date "date_required", null: false
-    t.date "date_completed"
+    t.integer "order_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "order_id", null: false
+    t.integer "page_number", null: false
     t.index ["order_id"], name: "index_door_listings_on_order_id"
   end
 
@@ -77,13 +74,28 @@ ActiveRecord::Schema.define(version: 2020_05_31_005121) do
     t.float "top_cs_location"
     t.float "top_lock_location"
     t.string "door_type"
+    t.string "letter"
+    t.integer "elevation_height"
+    t.integer "elevation_width"
+    t.boolean "glass", default: false
+    t.boolean "molding", default: false
+    t.boolean "kit", default: false
+    t.boolean "prime", default: false
+    t.string "glass_by"
+    t.string "molding_by"
+    t.string "kit_by"
+    t.string "sheet_notes"
+    t.boolean "skid_up", default: false
+    t.boolean "deliver", default: false
+    t.string "date_required"
+    t.string "date_completed"
+    t.string "phone_number"
   end
 
   create_table "orders", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "po_number", null: false
-    t.string "phone_number", null: false
     t.string "order_number", null: false
     t.integer "account_id", null: false
     t.index ["account_id"], name: "index_orders_on_account_id"

@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import DoorFormReducer from './door_form_reducer';
+import DoorOrderFormsReducer from './door_order_forms_reducer';
 
 const formsReducer = combineReducers({
-  doorForm: DoorFormReducer,
+  doorOrderForm: DoorOrderFormsReducer
 });
 
 export default formsReducer;

@@ -25,7 +25,7 @@ export const customStyles = {
     height: '35px',
     'min-height': '35px',
     'border-radius': 0,
-    border: '1px solid black'
+    borderRight: '1px solid black'
   }),
   indicatorsContainer: provided => ({
     ...provided,
@@ -41,7 +41,7 @@ export const customStyles = {
 export const customFixedStyles = {
   container: provided => ({
     ...provided,
-    width: 50,
+    width: '100%',
     height: '35px',
     padding: 0,
     'min-height': '35px',
@@ -120,6 +120,16 @@ const overSizedFour = [OVER_SIZED_2_HINGE_4_5, OVER_SIZED_3_HINGE_4_5, OVER_SIZE
 export const booleanSelectOptions = [
   {label: 'True', value: true,},
   {label: 'False', value: false}
+]
+
+export const yesNoSelectOptions = [
+  { label: 'Yes', value: true, },
+  { label: 'No', value: false }
+]
+
+export const depotOthersSelectOptions = [
+  { label: 'BY DEPOT', value: 'BY DEPOT', },
+  { label: 'BY OTHERS', value: 'BY OTHERS' }
 ]
 
 export const doorHingeHelper = (hingeNumber, hingeSize, height, totalDoors) => {

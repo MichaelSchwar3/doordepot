@@ -9,7 +9,6 @@ class OrderForm extends React.Component {
     super(props);
     this.state = {
       poNumber: '',
-      phoneNumber: '',
     }
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -45,19 +44,11 @@ class OrderForm extends React.Component {
           <div id="workout-form-form">
             <form onSubmit={this.handleSubmit}>
               <label id="regular-input">
-                <span>Order Number</span>
+                <span>PO Number</span>
                 <input
                   type="text"
                   value={this.state.poNumber}
                   onChange={this.update("poNumber")}
-                />
-              </label>
-              <label id="regular-input">
-                <span>Phone Number</span>
-                <input
-                  type="text"
-                  value={this.state.phoneNumber}
-                  onChange={this.update("phoneNumber")}
                 />
               </label>
               <input id="workout-save-button" type="submit" value="SAVE" />

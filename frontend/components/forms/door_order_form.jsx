@@ -468,7 +468,7 @@ class DoorOrderForm extends React.Component {
     const submit = async () => {
       const order = Object.assign({}, form);
       await this.props.submitDoor(order);
-      this.props.history.push(`/doorListings/${this.props.doorListingId}`);
+      this.props.history.push(`/orders/${this.props.orderId}`);
     };
     submit();
   }
@@ -483,14 +483,6 @@ class DoorOrderForm extends React.Component {
   updateDebounce(value, field) {
     this.setState({ [field]: value });
   }
-
-  // updateCommon(field) {
-  //   return (e) => {
-  //     return this.setState({
-  //       [field]: e.currentTarget.value,
-  //     }, ()=> updateDoorCommon(this.state));
-  //   };
-  // }
 
   calculateLockInputs() {
     const { form, updateDoorCommon } = this.props;
@@ -1148,6 +1140,7 @@ class DoorOrderForm extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const doorListing = state.entities.doorListings[ownProps.match.params.doorListingId]
+  const orderId = doorListing.orderId
   return {
   errors: state.errors,
   formOptions: state.entities.formOptions.doorOrderForm,
@@ -1156,6 +1149,7 @@ const mapStateToProps = (state, ownProps) => {
   doorListingId: ownProps.match.params.doorListingId,
   orderNumber: doorListing ? doorListing.orderNumber : '',
   poNumber: doorListing ? doorListing.poNumber : '',
+  orderId
 }};
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

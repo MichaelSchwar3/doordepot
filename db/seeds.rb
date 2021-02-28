@@ -10,3 +10,4 @@
 Account.create(name: "Door Depot")
 
 User.create(email: 'Michael@michael.com', password: 'password', fname: "Michael", lname: "Schwartz", account_id: Account.first, role: "Admin")
+User.create(email: 'David@david.com', password: 'password', fname: "David", lname: "Schwartz", account_id: Account.first, role: "Admin")

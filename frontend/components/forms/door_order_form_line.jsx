@@ -12,10 +12,10 @@ import {
 import { Input } from '../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
 import styled from 'styled-components';
+import { DebounceInput } from 'react-debounce-input';
 
 export const Container = styled.div`
   margin: auto;
-
 `
 
 const LeftSection = styled.section`
@@ -27,10 +27,11 @@ const Label = styled.label`
   display: flex;
   width: 50px;
   align-items: center;
-  justify-content: flex-end;
-  font-size: 12px;
+  justify-content: center;
+  font-size: 10px;
   border-left: 1px solid black;
   border-bottom: 1px solid black;
+  text-align: center;
 `;
 
 
@@ -93,6 +94,16 @@ class DoorOrderFormLine extends React.Component {
         })
       }
     }
+
+    if (this.shouldHingeAndLockChange(currentFirstDoor)) {
+      const quantity = parseInt(this.state.lhQuantity) > 0 || parseInt(this.state.rhQuantity) > 0
+      if(quantity && (this.state.letter !== "A")){
+        this.setState({
+          hinges: currentFirstDoor.hinges,
+          lockset: currentFirstDoor.lockset,
+        })
+      }
+    }
     // if((prevFirstDoor.lockset !== currentFirstDoor.lockset) || (currentFirstDoor.lockset !== this.state.lockset)){
     //   this.setState({
     //     lockset: currentFirstDoor.lockset
@@ -115,6 +126,8 @@ class DoorOrderFormLine extends React.Component {
         heightFeet: this.props.door.heightFeet,
         heightInches: this.props.door.heightInches,
         hingeOverRide: this.props.door.hingeOverRide,
+        hinges: this.props.door.hinges,
+        lockset: this.props.door.lockset,
         letter: this.props.letter,
         lhQuantity: this.props.door.lhQuantity,
         nsHeight: this.props.door.nsHeight,
@@ -147,6 +160,12 @@ class DoorOrderFormLine extends React.Component {
 
   initialCalculations() {
     this.calculateActualSizes();
+  }
+
+  shouldHingeAndLockChange(currentFirstDoor) {
+    if(currentFirstDoor.hinges !== this.state.hinges) return true;
+    if(currentFirstDoor.lockset !== this.state.lockset) return true;
+    return false;
   }
 
   shouldActualSizesChange(prevState, newState) {
@@ -193,6 +212,14 @@ class DoorOrderFormLine extends React.Component {
     };
   }
 
+  updateDebounce(value, field) {
+    const updateField = async () => {
+      await this.setState({ [field]: value });
+      this.props.updateDoorForm(this.state)
+    }
+    updateField()
+  }
+
   calculateActualSizes() {
     const { rhQuantity, lhQuantity, hinges, frameType, undercut, doorType } = this.state;
     if (rhQuantity + lhQuantity === 0) {
@@ -217,7 +244,6 @@ class DoorOrderFormLine extends React.Component {
     const wideSideWidth = calculateWideSideWidth(doorType, width) || 0;
     const narrowSideWidth = wideSideWidth ? wideSideHeight - 4 : "" || 0;
     const narrowSideHeight = wideSideHeight || 0;
-
     this.setState({
       actualWidth: width,
       actualHeight: height,
@@ -271,23 +297,27 @@ class DoorOrderFormLine extends React.Component {
       <>
           <LeftSection>
             <Label>
-              <div>{this.props.letter}</div>
+              <div style={{textAlign: "center"}}>{this.props.letter}</div>
             </Label>
             <Label>
-              <Input
+              <DebounceInput element={Input}
                 type="number"
                 min="0"
                 value={this.state.lhQuantity}
-                onChange={this.update("lhQuantity")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "lhQuantity")}
                 className="door-listing-input"
               />
             </Label>
             <Label>
-              <Input
+              <DebounceInput element={Input}
                 type="number"
                 min="0"
                 value={this.state.rhQuantity}
-                onChange={this.update("rhQuantity")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "rhQuantity")}
                 className="door-listing-input"
               />
             </Label>
@@ -318,49 +348,57 @@ class DoorOrderFormLine extends React.Component {
               />
             </Label>
             <Label>
-              <Input
+              <DebounceInput element={Input}
                 type="number"
                 min="0"
                 value={this.state.widthFeet}
-                onChange={this.update("widthFeet")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "widthFeet")}
                 className="door-listing-input"
               />
             </Label>
             <Label>
-              <Input
+              <DebounceInput element={Input}
                 type="number"
                 min="0"
                 value={this.state.widthInches}
-                onChange={this.update("widthInches")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "widthInches")}
                 className="door-listing-input"
               />
             </Label>
             <Label>
-              <Input
+              <DebounceInput element={Input}
                 type="number"
                 min="0"
                 value={this.state.heightFeet}
-                onChange={this.update("heightFeet")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "heightFeet")}
                 className="door-listing-input"
-                disabled={disabledInput}
               />
             </Label>
             <Label>
-              <Input
+              <DebounceInput element={Input}
                 type="number"
                 min="0"
                 value={this.state.heightInches}
-                onChange={this.update("heightInches")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "heightInches")}
                 className="door-listing-input"
-                disabled={disabledInput}
               />
             </Label>
             <Label>
-              <Input
+              <DebounceInput element={Input}
                 type="number"
                 min="0"
                 value={this.state.undercut}
-                onChange={this.update("undercut")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "undercut")}
                 className="door-listing-input"
               />
             </Label>
@@ -471,7 +509,7 @@ class DoorOrderFormLine extends React.Component {
               type="text"
               value={this.state.actualWidth}
               onChange={this.update("actualWidth")}
-              className="door-listing-input"
+              className="door-listing-input disabled"
               disabled={true}
             />
           </Label>
@@ -480,7 +518,7 @@ class DoorOrderFormLine extends React.Component {
               type="text"
               value={this.state.actualHeight}
               onChange={this.update("actualHeight")}
-              className="door-listing-input"
+              className="door-listing-input disabled"
               disabled={true}
             />
           </Label>

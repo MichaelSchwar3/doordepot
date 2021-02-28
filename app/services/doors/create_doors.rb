@@ -3,25 +3,49 @@ class Doors::CreateDoors
     Doors::CreateDoors.new(door_params, door_listing_id).build
   end
 
-  def initialize(door_params, door_listing_id)
-    @doors = door_params
-    @door_listing_id = door_listing_id
+  def self.update(door_params, door_listing_id)
+    doors = Door.where(door_listing_id: door_listing_id)
+    update_doors(doors, door_params)
   end
 
-  def build
+  def initialize(door_params, door_listing_id, existing_doors=[])
+    @doors = door_params
+    @door_listing_id = door_listing_id
+    @existing_doors = existing_doors
+  end
+
+  def build   
     Door.transaction do
       %w[A B C D E F].each do |letter|
-       # binding.pry
         if letter == "A"
-          Door.create(first_door_params.merge(door_listing_id).merge(common_params).merge({letter: letter}))
+          Door.create(common_params.merge(door_listing_id).merge(first_door_params).merge({letter: letter}))
         else
           if check_quantity(letter)
-            Door.create(door_params(letter).merge(door_listing_id).merge(common_params).merge({letter: letter}))
+            Door.create(common_params.merge(door_listing_id).merge(door_params(letter)).merge({letter: letter}))
           end
         end
       end
     end
-    
+  end
+
+  def update
+    Door.transaction do
+      %w[A B C D E F].each do |letter|
+        if letter == "A"
+          @existing_doors.find_by(letter: "A").update(common_params.merge(door_listing_id).merge(first_door_params))
+        else
+          existing = @existing_doors.find_by(letter: letter)
+          if existing
+            existing.update(common_params.merge(door_listing_id).merge(door_params(letter)))
+          else
+            if check_quantity(letter)
+              Door.create(common_params.merge(door_listing_id).merge(door_params(letter)).merge({letter: letter}))
+            end
+          end
+        end
+      end
+    end
+
   end
 
   private

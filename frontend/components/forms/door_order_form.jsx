@@ -27,6 +27,7 @@ import styled from 'styled-components';
 import DoorOrderFormLine from './door_order_form_line'
 import DoorOrderTagLine from './door_order_tag_line'
 import DoorOrderSheetLine from './door_order_sheet_line'
+import { DebounceInput } from 'react-debounce-input';
 
 const DoorImage = styled.img`
   position: relative;
@@ -37,6 +38,8 @@ export const Container = styled.div`
   width: 100%;
   display flex;
   flex-direction: column;
+  max-width: 1280px;
+  margin: auto;
 `
 
 const SubmitButton = styled.button`
@@ -135,7 +138,8 @@ const SheetSizeColumns = styled.div`
 `
 const SheetNotesDiv = styled.div`
   display: grid;
-  grid-template-columns: 15% 85%
+  grid-template-columns: 15% 85%;
+  border: 1px solid black;
 `
 const VisionContainer = styled.div`
   width: 70%;
@@ -145,7 +149,22 @@ const VisionContainer = styled.div`
 
 const VisionRow = styled.div`
   display: grid;
-  grid-template-columns: 30% 25% 50%;
+  grid-template-columns: 30% 20% 50%;
+  border-left:1px solid black;
+  border-top:1px solid black;
+`;
+
+const VisionRowCutOut = styled.div`
+  display: grid;
+  grid-template-columns: 30% 30% 10% 30%;
+  border-left:1px solid black;
+  border-top:1px solid black;
+`;
+
+const VisionRowDiv = styled.div`
+  text-align: center;
+  border-left:1px solid black;
+  border-top:1px solid black;
 `;
 
 
@@ -156,6 +175,7 @@ const HalfFixedLabel = styled.label`
   height: 35px;
   border-right:1px solid black;
   border-bottom:1px solid black;
+  justify-content: center;
 `;
 
 const Row = styled.div`
@@ -217,6 +237,7 @@ class DoorOrderForm extends React.Component {
       hingeSize: "",
       hingeWidth: "",
       hinges: "",
+      initialLoad: true,
       kit: false,
       kitBy: "",
       lockBackset: "",
@@ -244,21 +265,22 @@ class DoorOrderForm extends React.Component {
     const fetchFormOptions = async () => {
       await this.props.fetchFormOptions();
       await this.props.fetchDoors()
+      this.updateSheetFromProps()
       this.setState({ fetching: false });
       this.initialCalculations()
     };
-
     fetchFormOptions();
   }
 
   componentDidUpdate(prevProps, prevState) {
     const prevForm = prevProps.form;
-    const { form } = this.props;
+    const { form, updateDoorCommon } = this.props;
     if(isEmpty(prevForm["A"]) || isEmpty(form["A"])) {
       return
     }
     const prevDoor = isEmpty(prevForm) ? {} : prevForm["A"] 
-    const currentDoor = isEmpty(form) ? {} : form["A"]
+    const currentDoor = isEmpty(form) ? {} : form["A"]  
+
     if (this.shouldHingeLocationsChange(prevForm, form, prevState, this.state)) {
       this.calculateHinges();
     }
@@ -274,6 +296,42 @@ class DoorOrderForm extends React.Component {
     if (this.shouldTopLockLocationChange(prevDoor, currentDoor)) {
       this.calculateTopLockLocation()
     }
+    if (this.shouldCommonUpdate(prevState)) {
+      updateDoorCommon(this.state)
+    }
+    
+    if (this.state.initialLoad){
+      this.setState({initialLoad: false})
+    }
+  }
+
+  updateSheetFromProps() {
+    const updateSheet = async () => {
+      await this.setState({
+        elevationHeight: this.props.doors["A"].elevationHeight,
+        elevationWidth: this.props.doors["A"].elevationWidth,
+        dateRequired: this.props.doors["A"].dateRequired,
+        dateCompleted: this.props.doors["A"].dateCompleted,
+        deliver: this.props.doors["A"].deliver,
+        glass: this.props.doors["A"].glass,
+        glassBy: this.props.doors["A"].glassBy,
+        kit: this.props.doors["A"].kit,
+        kitBy: this.props.doors["A"].kitBy,
+        molding: this.props.doors["A"].molding,
+        moldingBy: this.props.doors["A"].moldingBy,
+        phoneNumber: this.props.doors["A"].phoneNumber,
+        prime: this.props.doors["A"].prime,
+        sheetNotes: this.props.doors["A"].sheetNotes,
+        skidUp: this.props.doors["A"].skidUp,
+        hingeSize: this.props.doors["A"].hingeSize,
+        hingeSize: this.props.doors["A"].hingeSize,
+        hinges: this.props.doors["A"].hinges,
+        hingeWidth: this.props.doors["A"].hingeWidth
+      })
+    };
+    if(this.props.doors["A"]){
+      updateSheet();
+    }
   }
 
   initialCalculations() {
@@ -285,6 +343,9 @@ class DoorOrderForm extends React.Component {
   }
 
   shouldActualSizesChange(prevDoor, currentDoor) {
+    if (this.state.initialLoad) {
+      return true
+    }
     if (prevDoor.lhQuantity !== currentDoor.lhQuantity) {
       return true;
     }
@@ -319,6 +380,10 @@ class DoorOrderForm extends React.Component {
   }
 
   shouldTopLockLocationChange(prevDoor, currentDoor) {
+
+    if (this.state.initialLoad) {
+      return true
+    }
     if (prevDoor.lockSizeHeightTop !== currentDoor.lockSizeHeightTop) {
       return true;
     }
@@ -332,6 +397,9 @@ class DoorOrderForm extends React.Component {
   }
 
   shouldLockSizeChange(prevDoor, currentDoor) {
+    if (this.state.initialLoad) {
+      return true
+    }
     if (prevDoor.lockset !== currentDoor.lockset) {
       return true;
     }
@@ -341,6 +409,9 @@ class DoorOrderForm extends React.Component {
   shouldHingeLocationsChange(prevForm, form, prevState, newState) {
     const prevDoor = prevForm["A"]
     const currentDoor = form["A"]
+    if (this.state.initialLoad) {
+      return true
+    }
     if (prevDoor.hingeOverRide === true && currentDoor.hingeOverRide == false) {
       return true;
     }
@@ -363,6 +434,9 @@ class DoorOrderForm extends React.Component {
   }
 
   shouldCsLocationChange(prevDoor, currentDoor) {
+    if (this.state.initialLoad) {
+      return true
+    }
     if (prevDoor.frameType !== currentDoor.frameType) {
       return true;
     }
@@ -376,6 +450,16 @@ class DoorOrderForm extends React.Component {
       return true;
     }
     return false;
+  }
+
+  shouldCommonUpdate(prevState) {
+    const fields = "dateCompleted dateRequired deliver elevationHeight elevationWidth glass glassBy kit kitBy lockset molding moldingBy phoneNumber prime sheetNotes skidUp ".split(" ")
+    return fields.map( field => {
+      if(prevState[field] !== this.state[field]) {
+        return true;
+      }
+      return false;
+    }).some( element => element === true )
   }
 
   handleSubmit(e) {
@@ -396,6 +480,17 @@ class DoorOrderForm extends React.Component {
       });
     };
   }
+  updateDebounce(value, field) {
+    this.setState({ [field]: value });
+  }
+
+  // updateCommon(field) {
+  //   return (e) => {
+  //     return this.setState({
+  //       [field]: e.currentTarget.value,
+  //     }, ()=> updateDoorCommon(this.state));
+  //   };
+  // }
 
   calculateLockInputs() {
     const { form, updateDoorCommon } = this.props;
@@ -518,7 +613,8 @@ class DoorOrderForm extends React.Component {
       <DoorOrderFormLine 
         formOptions={this.props.formOptions} 
         firstDoor={firstDoor} 
-        door={this.props.doors[letter] || {}} 
+        door={this.props.doors[letter] || {}}
+        key={`line-${letter}`}
         letter={letter} 
         updateDoorForm={updateDoorForm} />
       )
@@ -558,10 +654,12 @@ class DoorOrderForm extends React.Component {
               Phone Number
             </HeaderDiv>
             <HeaderDiv>
-              <Input
+              <DebounceInput element={Input}
                 type="text"
                 value={this.state.phoneNumber}
-                onChange={this.update("phoneNumber")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "phoneNumber")}
                 className="door-listing-input"
               />
             </HeaderDiv>
@@ -569,10 +667,12 @@ class DoorOrderForm extends React.Component {
               Date Required
             </HeaderDiv>
             <HeaderDiv>
-              <Input
+              <DebounceInput element={Input}
                 type="text"
                 value={this.state.dateRequired}
-                onChange={this.update("dateRequired")}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "dateRequired")}
                 className="door-listing-input"
               />
             </HeaderDiv>
@@ -580,10 +680,12 @@ class DoorOrderForm extends React.Component {
               Date Completed
             </HeaderDiv>
             <HeaderDiv>
-              <Input
+              <DebounceInput element={Input}
                 type="text"
-                value={this.state.dateRequired}
-                onChange={this.update("dateCompleted")}
+                value={this.state.dateCompleted}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "dateCompleted")}
                 className="door-listing-input"
                 disabled={true}
               />
@@ -656,6 +758,7 @@ class DoorOrderForm extends React.Component {
                 top={"0px"}
                 type="number"
                 value={this.state.firstHinge}
+                className="disabled"
                 onChange={this.update("firstHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -663,6 +766,7 @@ class DoorOrderForm extends React.Component {
                 top={"80px"}
                 type="number"
                 value={this.state.secondHinge}
+                className="disabled"
                 onChange={this.update("secondHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -670,6 +774,7 @@ class DoorOrderForm extends React.Component {
                 top={"161px"}
                 type="number"
                 value={this.state.thirdHinge}
+                className="disabled"
                 onChange={this.update("thirdHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -677,6 +782,7 @@ class DoorOrderForm extends React.Component {
                 top={"263px"}
                 type="number"
                 value={this.state.fourthHinge}
+                className="disabled"
                 onChange={this.update("fourthHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -685,6 +791,7 @@ class DoorOrderForm extends React.Component {
                 left={"295px"}
                 type="text"
                 value={this.state.hingeBackset}
+                className="disabled"
                 onChange={this.update("hingeBackset")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -693,6 +800,7 @@ class DoorOrderForm extends React.Component {
                 top={"147px"}
                 type="number"
                 value={this.state.lockLocation}
+                className="disabled"
                 onChange={this.update("lockLocation")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -700,6 +808,7 @@ class DoorOrderForm extends React.Component {
                 top={"80px"}
                 type="number"
                 value={this.state.topLockLocation}
+                className="disabled"
                 onChange={this.update("topLockLocation")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -708,6 +817,7 @@ class DoorOrderForm extends React.Component {
                 left={"-7px"}
                 type="text"
                 value={this.state.lockBackset}
+                className="disabled"
                 onChange={this.update("lockBackset")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -724,40 +834,46 @@ class DoorOrderForm extends React.Component {
               </SheetSizeColumns>
               {this.sheetSizeLines()}
               <SheetNotesDiv>
-                <span>Notes</span>
-                <Input
-                  type="text"
-                  value={this.state.sheetNotes}
-                  onChange={this.update("sheetNotes")}
-                  className="door-listing-input"
-                />
+                <span style={{borderRight: '1px solid black'}}>Notes</span>
+                <DebounceInput element={Input}
+                type="text"
+                value={this.state.sheetNotes}
+                debounceTimeout={300}
+                onChange={(event) => 
+                  this.updateDebounce(event.target.value, "sheetNotes")}
+                className="door-listing-input"
+              />
               </SheetNotesDiv>
               <VisionContainer>
-                <div>Door Elevations</div>
-                <div>Cut Out Size</div>
-                <VisionRow>
-                  <div>Size</div>
-                  <Input
+                <div style={{textAlign: "center"}}>Door Elevations</div>
+                <div style={{textAlign: "center"}}>Cut Out Size</div>
+                <VisionRowCutOut>
+                  <VisionRowDiv>Size</VisionRowDiv>
+                  <DebounceInput element={Input}
                     type="number"
                     min="0"
+                    style={{borderLeft: "1px solid black", borderTop: "1px solid black"}}
                     value={this.state.elevationWidth}
-                    onChange={this.update("lhQuantity")}
+                    debounceTimeout={300}
+                    onChange={(event) => 
+                      this.updateDebounce(event.target.value, "elevationWidth")}
                     className="door-listing-input"
                   />
-                  <div> 
-                    <div>X</div>             
-                    <Input
-                      type="number"
-                      min="0"
-                      value={this.state.elevationHeight}
-                      onChange={this.update("lhQuantity")}
-                      className="door-listing-input"
-                    />
-                  </div>
-                </VisionRow>
+                  <VisionRowDiv>X</VisionRowDiv>             
+                  <DebounceInput element={Input}
+                    type="number"
+                    min="0"
+                    style={{borderLeft: "1px solid black", borderTop: "1px solid black"}}
+                    value={this.state.elevationHeight}
+                    debounceTimeout={300}
+                    onChange={(event) => 
+                      this.updateDebounce(event.target.value, "elevationHeight")}
+                    className="door-listing-input"
+                  />
+                </VisionRowCutOut>
                 <VisionRow>
-                  <div>Kit</div>
-                  <div>
+                  <VisionRowDiv>Kit</VisionRowDiv>
+                  <VisionRowDiv>
                     <Select
                       styles={customFixedStyles}
                       options={yesNoSelectOptions}
@@ -769,8 +885,8 @@ class DoorOrderForm extends React.Component {
                       isSearchable={false}
                       components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     />
-                  </div>
-                  <div>
+                  </VisionRowDiv>
+                  <VisionRowDiv>
                     <Select
                       styles={customFixedStyles}
                       options={depotOthersSelectOptions}
@@ -782,11 +898,11 @@ class DoorOrderForm extends React.Component {
                       isSearchable={false}
                       components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     />
-                  </div>
+                  </VisionRowDiv>
                 </VisionRow>
                 <VisionRow>
-                  <div>Molding</div>
-                  <div>
+                  <VisionRowDiv>Molding</VisionRowDiv>
+                  <VisionRowDiv>
                     <Select
                       styles={customFixedStyles}
                       options={yesNoSelectOptions}
@@ -798,8 +914,8 @@ class DoorOrderForm extends React.Component {
                       isSearchable={false}
                       components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     />
-                  </div>
-                  <div>
+                  </VisionRowDiv>
+                  <VisionRowDiv>
                     <Select
                       styles={customFixedStyles}
                       options={depotOthersSelectOptions}
@@ -811,11 +927,11 @@ class DoorOrderForm extends React.Component {
                       isSearchable={false}
                       components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     />
-                  </div>
+                  </VisionRowDiv>
                 </VisionRow>
                 <VisionRow>
-                  <div>Glass</div>
-                  <div>
+                  <VisionRowDiv>Glass</VisionRowDiv>
+                  <VisionRowDiv>
                     <Select
                       styles={customFixedStyles}
                       options={yesNoSelectOptions}
@@ -827,8 +943,8 @@ class DoorOrderForm extends React.Component {
                       isSearchable={false}
                       components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     />
-                  </div>
-                  <div>
+                  </VisionRowDiv>
+                  <VisionRowDiv>
                     <Select
                       styles={customFixedStyles}
                       options={depotOthersSelectOptions}
@@ -840,7 +956,7 @@ class DoorOrderForm extends React.Component {
                       isSearchable={false}
                       components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     />
-                  </div>
+                  </VisionRowDiv>
                 </VisionRow>
               </VisionContainer>
             </SheetSizeContainer>
@@ -850,6 +966,7 @@ class DoorOrderForm extends React.Component {
                 top={"0px"}
                 type="number"
                 value={this.state.firstHinge}
+                className="disabled"
                 onChange={this.update("firstHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -857,6 +974,7 @@ class DoorOrderForm extends React.Component {
                 top={"80px"}
                 type="number"
                 value={this.state.secondHinge}
+                className="disabled"
                 onChange={this.update("secondHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -864,6 +982,7 @@ class DoorOrderForm extends React.Component {
                 top={"161px"}
                 type="number"
                 value={this.state.thirdHinge}
+                className="disabled"
                 onChange={this.update("thirdHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -871,6 +990,7 @@ class DoorOrderForm extends React.Component {
                 top={"263px"}
                 type="number"
                 value={this.state.fourthHinge}
+                className="disabled"
                 onChange={this.update("fourthHinge")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -879,6 +999,7 @@ class DoorOrderForm extends React.Component {
                 top={"147px"}
                 type="number"
                 value={this.state.lockLocation}
+                className="disabled"
                 onChange={this.update("lockLocation")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -886,6 +1007,7 @@ class DoorOrderForm extends React.Component {
                 top={"80px"}
                 type="number"
                 value={this.state.topLockLocation}
+                className="disabled"
                 onChange={this.update("topLockLocation")}
                 disabled={!this.state.hingeOverRide}
               />
@@ -926,32 +1048,36 @@ class DoorOrderForm extends React.Component {
               <FlexDiv>
                 <HalfFixedLabel>Lock Size</HalfFixedLabel>
                 <HalfFixedLabel>
-                  <Input
+                  <DebounceInput element={Input}
                     type="text"
                     value={this.state.lockSizeWidthBot}
-                    onChange={this.update("lockSizeWidthBot")}
+                    debounceTimeout={300}
+                    onChange={(event) => 
+                      this.updateDebounce(event.target.value, "lockSizeWidthBot")}
                     className="door-listing-input"
-                    disabled={true}
                   />
                 </HalfFixedLabel>
                 <HalfFixedLabel> X </HalfFixedLabel>
                 <HalfFixedLabel>
-                  <Input
+                  <DebounceInput element={Input}
                     type="text"
                     value={this.state.lockSizeHeightBot}
-                    onChange={this.update("lockSizeHeightBot")}
+                    debounceTimeout={300}
+                    onChange={(event) => 
+                      this.updateDebounce(event.target.value, "lockSizeHeightBot")}
                     className="door-listing-input"
-                    disabled={true}
                   />
                 </HalfFixedLabel>
               </FlexDiv>
               <FlexDivCsLocation>
                 <HalfFixedLabel>CS Location</HalfFixedLabel>
                 <HalfFixedLabel>
-                  <Input
+                  <DebounceInput element={Input}
                     type="text"
                     value={this.state.csLocation}
-                    onChange={this.update("csLocation")}
+                    debounceTimeout={300}
+                    onChange={(event) => 
+                      this.updateDebounce(event.target.value, "csLocation")}
                     className="door-listing-input"
                     disabled={true}
                   />
@@ -990,13 +1116,16 @@ class DoorOrderForm extends React.Component {
               <FlexDivCsLocation>
                 <HalfFixedLabel>CS Location</HalfFixedLabel>
                 <HalfFixedLabel>
-                  <Input
+                  <DebounceInput element={Input}
                     type="text"
                     value={this.state.topCsLocation}
-                    onChange={this.update("topCsLocation")}
+                    debounceTimeout={300}
+                    onChange={(event) => 
+                      this.updateDebounce(event.target.value, "topCsLocation")}
                     className="door-listing-input"
                     disabled={true}
                   />
+                  
                 </HalfFixedLabel>
               </FlexDivCsLocation>
           </BottomSection>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { TagInput } from '../shared/styled/inputs';
-import { find, isEmpty } from 'lodash';
 import styled from 'styled-components';
+import { DebounceInput } from 'react-debounce-input';
+
 
 const TagsContainer = styled.div`
   display: grid;
@@ -46,7 +47,7 @@ class DoorOrderTagLine extends React.Component {
     super(props);
     this.state = {
       letter: this.props.letter,
-      lhTags: "Testing",
+      lhTags: "",
       rhTags: "",
     };
   }
@@ -59,15 +60,13 @@ class DoorOrderTagLine extends React.Component {
  
   }
 
-  update(field) {
-    return (e) => {
+  update(value, field) {
       const updateField = async () => {
-        await this.setState({ [field]: e.currentTarget.value, });
+        await this.setState({ [field]: value });
         this.props.updateDoorTags(this.state)
       };
       updateField()
-    };
-  }
+  };
 
 
   // renderErrors() {
@@ -98,16 +97,20 @@ class DoorOrderTagLine extends React.Component {
           </RhTagSpan>
         </TagDiv>
         <TagDiv>
-            <TagInput
+            <DebounceInput element={TagInput}
               type="text"
               value={this.state.lhTags}
-              onChange={this.update("lhTags")}
+              debounceTimeout={300}
+              onChange={(event) => 
+                this.update(event.target.value, "lhTags")}
               className="door-listing-input"
             />
-            <TagInput
+            <DebounceInput element={TagInput}
               type="text"
               value={this.state.rhTags}
-              onChange={this.update("rhTags")}
+              debounceTimeout={300}
+              onChange={(event) => 
+                this.update(event.target.value, "rhTags")}
               className="door-listing-input"
             />
         </TagDiv>

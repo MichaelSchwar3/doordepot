@@ -2,18 +2,22 @@ input {
   height: 35px;
   width: 320px;
   // border: 1px solid lightgray;
-  font-size: 14px;
+  font-size: 12px;
   // margin: 7px;
   font-family: 'Mukta Malar', sans-serif;
-  background-color: #F3F3F3;
-  padding-left: 10px;
+  background-color: #FFFFFF;
+  // padding-left: 10px;
   box-sizing: border-box;
   color: black;
 }
 
-input:focus{
-  background-color: #FFFFFF;
+.disabled {
+  background-color: #F3F3F3;
 }
+
+// input:focus{
+//   background-color: #FFFFFF;
+// }
 
 input::placeholder{
   color: #9A9EA9;

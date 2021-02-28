@@ -16,7 +16,6 @@ class Api::DoorsController < ApplicationController
     render 'api/doors/index'
   end
 
-
   def door_order_params
     params.require(:door)
   end

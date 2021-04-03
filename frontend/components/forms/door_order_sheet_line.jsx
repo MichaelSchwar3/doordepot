@@ -2,6 +2,7 @@ import React from 'react';
 import { TagInput } from '../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
 import styled from 'styled-components';
+import { formatFractions } from './../../util/fraction_util';
 
 const SheetSizeLineContainer = styled.div`
   display: grid;
@@ -40,25 +41,25 @@ class DoorOrderSheetLine extends React.Component {
             {(parseInt(door.lhQuantity) + parseInt(door.rHQuantity)) || ""}
           </SheetSizeDiv>
           <SheetSizeDiv>
-            {door.wsWidth}
+            {formatFractions(door.wsWidth)}
           </SheetSizeDiv>
           <SheetSizeDiv>
             X
           </SheetSizeDiv>
           <SheetSizeDiv>
-            {door.wsHeight}
+            {formatFractions(door.wsHeight)}
           </SheetSizeDiv>
           <SheetSizeDiv>
             {(parseInt(door.lhQuantity) + parseInt(door.rHQuantity)) || "" }
           </SheetSizeDiv>
           <SheetSizeDiv>
-            {door.nsWidth}
+            {formatFractions(door.nsWidth)}
           </SheetSizeDiv>
           <SheetSizeDiv>
             X
           </SheetSizeDiv>
           <SheetSizeDiv>
-            {door.nsHeight}
+            {formatFractions(door.nsHeight)}
           </SheetSizeDiv>
 
         </SheetSizeLineContainer>

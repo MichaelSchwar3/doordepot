@@ -1,4 +1,3 @@
-import { NonceProvider } from "react-select";
 
 export const processForSelect = (labels) => {
   return labels.map( label => {
@@ -117,9 +116,9 @@ const overSizedFour = [OVER_SIZED_2_HINGE_4_5, OVER_SIZED_3_HINGE_4_5, OVER_SIZE
 
 
 
-export const booleanSelectOptions = [
-  {label: 'True', value: true,},
-  {label: 'False', value: false}
+export const wideSideNarrowSideSelectOptions = [
+  {label: 'W/S', value: true,},
+  {label: 'N/S', value: false}
 ]
 
 export const yesNoSelectOptions = [
@@ -236,7 +235,7 @@ export const calculateTopCsLocation = (lockset, csLocation) => {
 }
 
 export const calculateLockBackset = (lockset) => {
-  if(lockset === '161 Lock') { return "B/S: 57/64"; }
+  if(lockset === '161 Lock' || lockset === 'DBL 161 Lock') { return "B/S: 57/64"; }
   if(['Apartment', 'Mortise Lock', '86 Edge'].includes(lockset)) { return "B/S: 27/32";}
   if(lockset === '91A') { return "B/S: 1 1/32"; }
   return ""
@@ -287,20 +286,44 @@ export const calculateActualWidth = (width, hingeType, frameType) => {
 export const calculateWideSideWidth = (doorType, actualWidth) => {
   if(doorType === "" || actualWidth === "") { return "" }
 
-  if(["16 Flush", "16 Vision", "16 Panel", "16 Louver", "16 Misc"].includes(doorType)){
-    return actualWidth + 4.688 - 0.125;
+  if(doorType.startsWith("16")){
+    return actualWidth + 4.6875 - 0.125;
   }
-  if(["KL Flush", "KL Vision", "KL Panel", "KL Louver"].includes(doorType)){
+  if(doorType.startsWith("KL")){
     return actualWidth + 5;
   }
-  return actualWidth + 4.688
+  return actualWidth + 4.6875
 }
 
 export const calculateWideSideHeight = (doorType, actualHeight) => {
   if(doorType === "" || actualHeight === "") { return "" }
 
-  if(["KL Flush", "KL Vision", "KL Panel", "KL Louver"].includes(doorType)){
+  if(doorType.startsWith("KL")){
     return actualHeight + 3;
   }
   return actualHeight
+}
+
+export const inactiveHelper = (inactive, csLocation, csLocationTop, height) => {  
+  if(!inactive) {
+    return {
+      top: "",
+      topLock: "",
+      botLock: "",
+      bot: "",
+    }
+  }
+
+  const top = height > 84 ? (height - 84 + 8.625) : 8.625;
+  const topLock = csLocationTop ? csLocationTop - 1.375 : "";
+  const botLock = csLocation ? csLocation - 2.4375 : "";
+  const bot = 8.625;
+
+  return {
+    top,
+    topLock,
+    botLock,
+    bot
+  };
+
 }

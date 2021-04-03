@@ -6,9 +6,8 @@ import Select from 'react-select';
 import {
   processForSelect,
   doorHingeHelper,
-  booleanSelectOptions,
+  yesNoSelectOptions,
   customFixedStyles,
-  customStyles,
   calculateCsLocation,
   calculateLockLocation,
   calculateLockSizeWidth,
@@ -17,7 +16,8 @@ import {
   calculateLockBackset,
   calculateHingeBackset,
   depotOthersSelectOptions,
-  yesNoSelectOptions,
+  wideSideNarrowSideSelectOptions,
+  inactiveHelper
 } from "../shared/helpers";
 import { fetchDoorOrderOptions } from '../../actions/door_order_actions';
 import { Input } from '../shared/styled/inputs';
@@ -28,6 +28,9 @@ import DoorOrderFormLine from './door_order_form_line'
 import DoorOrderTagLine from './door_order_tag_line'
 import DoorOrderSheetLine from './door_order_sheet_line'
 import { DebounceInput } from 'react-debounce-input';
+import DoorElevationHelper from './door_elevation_helper';
+import LocksetHelper from './lockset_helper';
+import { formatFractions } from './../../util/fraction_util';
 
 const DoorImage = styled.img`
   position: relative;
@@ -223,6 +226,7 @@ class DoorOrderForm extends React.Component {
     super(props);
     this.state = {
       csLocation: "",
+      csLocationDisplay: "",
       elevationHeight: "",
       elevationWidth: "",
       dateRequired: "",
@@ -230,18 +234,29 @@ class DoorOrderForm extends React.Component {
       deliver: false,
       fetching: true,
       firstHinge: "",
+      firstHingeDisplay: "",
       fourthHinge: "",
+      fourthHingeDisplay: "",
       glass: false,
       glassBy: "",
       hingeBackset: "",
-      hingeSize: "",
+      hingeSize: "4.5",
       hingeWidth: "",
       hinges: "",
+      inactiveTop: "",
+      inactiveTopLock: "",
+      inactiveBotLock: "",
+      inactiveBot: "",
+      inactiveTopDisplay: "",
+      inactiveTopLockDisplay: "",
+      inactiveBotLockDisplay: "",
+      inactiveBotDisplay: "",
       initialLoad: true,
       kit: false,
       kitBy: "",
       lockBackset: "",
       lockLocation: "",
+      lockLocationDisplay: "",
       lockSizeHeightBot: "",
       lockSizeHeightTop: "",
       lockSizeWidthBot: "",
@@ -252,13 +267,18 @@ class DoorOrderForm extends React.Component {
       phoneNumber: "",
       prime: false,
       secondHinge: "",
+      secondHingeDisplay: "",
       sheetNotes: "",
       skidUp: false,
       thirdHinge: "",
+      thirdHingeDisplay: "",
       topCsLocation: "",
+      topCsLocationDisplay: "",
       topLockLocation: "",
+      topLockLocationDisplay: "",
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.setInactive = this.setInactive.bind(this);
   }
 
   componentDidMount() {
@@ -292,6 +312,9 @@ class DoorOrderForm extends React.Component {
     }
     if (this.shouldLockSizeChange(prevDoor, currentDoor)) {
       this.calculateLockSizeBot()
+    }
+    if (this.shouldInactiveChange(prevProps, this.props)) {
+      this.setInactive()
     }
     if (this.shouldTopLockLocationChange(prevDoor, currentDoor)) {
       this.calculateTopLockLocation()
@@ -462,6 +485,34 @@ class DoorOrderForm extends React.Component {
     }).some( element => element === true )
   }
 
+  shouldInactiveChange(prevProps) {
+    const currentInactive = ["A", "B", "C", "D", "E", "F"].some( letter => (
+      this.props.form[letter].lockset === "Inactive"
+    ));
+    const prevInactive = ["A", "B", "C", "D", "E", "F"].some( letter => (
+      prevProps.form[letter].lockset === "Inactive"
+    ));
+    return prevInactive !== currentInactive;
+  }
+
+  setInactive() {
+    const inactive = ["A", "B", "C", "D", "E", "F"].some( letter => (
+      this.props.form[letter].lockset === "Inactive"
+    ));
+
+    const inactiveMeasurements = inactiveHelper(inactive, this.state.csLocation, this.state.topCsLocation, this.height())
+    this.setState({
+      inactiveTop: inactiveMeasurements.top,
+      inactiveTopLock: inactiveMeasurements.topLock,
+      inactiveBotLock: inactiveMeasurements.botLock,
+      inactiveBot: inactiveMeasurements.bot,
+      inactiveTopDisplay: formatFractions(inactiveMeasurements.top),
+      inactiveTopLockDisplay: formatFractions(inactiveMeasurements.topLock),
+      inactiveBotLockDisplay: formatFractions(inactiveMeasurements.botLock),
+      inactiveBotDisplay: formatFractions(inactiveMeasurements.bot),
+    })
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     const { form } = this.props
@@ -495,14 +546,16 @@ class DoorOrderForm extends React.Component {
 
     this.setState({
       csLocation: newCsLocation,
+      csLocationDisplay: formatFractions(newCsLocation),
       lockLocation: newLockLocation,
+      lockLocationDisplay: formatFractions(newLockLocation)
     }, ()=> updateDoorCommon(this.state));
   }
 
   calculateLockSizeBot() {
     const { form, updateDoorCommon } = this.props;
     if (isEmpty(form) || isEmpty(form["A"])) return;
-    
+
     const currentDoor = form["A"]
     const { lockset } = currentDoor;
     this.setState({
@@ -517,15 +570,17 @@ class DoorOrderForm extends React.Component {
     if (isEmpty(form) || isEmpty(form["A"])) return;
 
     const currentDoor = form["A"]
-    const { lockset, csLocation, lockSizeHeightTop } = currentDoor;
-    const topCsLocation = calculateTopCsLocation(lockset, csLocation);
+    const { lockset } = currentDoor;
+    const topCsLocation = calculateTopCsLocation(lockset, this.state.csLocation);
     const topLockLocation =
-      topCsLocation && lockSizeHeightTop
-        ? topCsLocation - lockSizeHeightTop / 2.0
+      topCsLocation && this.state.lockSizeHeightTop
+        ? topCsLocation - this.state.lockSizeHeightTop / 2.0
         : "";
     this.setState({
       topCsLocation: topCsLocation,
+      topCsLocationDisplay: formatFractions(topCsLocation),
       topLockLocation: topLockLocation,
+      topLockLocationDisplay: formatFractions(topLockLocation)
     });
   }
 
@@ -542,9 +597,13 @@ class DoorOrderForm extends React.Component {
     const backset = calculateHingeBackset(this.state.hingeSize);
     this.setState({
       firstHinge: firstHinge,
+      firstHingeDisplay: formatFractions(firstHinge),
       secondHinge: secondHinge,
+      secondHingeDisplay: formatFractions(secondHinge),
       thirdHinge: thirdHinge,
+      thirdHingeDisplay: formatFractions(thirdHinge),
       fourthHinge: fourthHinge,
+      fourthHingeDisplay: formatFractions(fourthHinge),
       hingeBackset: backset,
     }, ()=> updateDoorCommon(this.state));
   }
@@ -631,7 +690,9 @@ class DoorOrderForm extends React.Component {
   }
 
   doorInputs() {
-    const { formOptions } = this.props;
+    const { formOptions, form } = this.props;
+    const doorType = form['A'] ? form['A'].doorType : "";
+    const lockset = form['A'] ? form['A'].lockset : "";
     return (
       <>
         <Container>
@@ -688,9 +749,9 @@ class DoorOrderForm extends React.Component {
             <HeaderDiv>
               <Select
                 styles={customFixedStyles}
-                options={booleanSelectOptions}
+                options={yesNoSelectOptions}
                 value={find(
-                  booleanSelectOptions,
+                  yesNoSelectOptions,
                   (obj) => obj.value === this.state.skidUp
                 )}
                 onChange={this.updateSelect("skidUp")}
@@ -704,9 +765,9 @@ class DoorOrderForm extends React.Component {
             <HeaderDiv>
               <Select
                 styles={customFixedStyles}
-                options={booleanSelectOptions}
+                options={yesNoSelectOptions}
                 value={find(
-                  booleanSelectOptions,
+                  yesNoSelectOptions,
                   (obj) => obj.value === this.state.deliver
                 )}
                 onChange={this.updateSelect("deliver")}
@@ -746,34 +807,32 @@ class DoorOrderForm extends React.Component {
           <MiddleSection>
             <DoorImageContainer>
               <DoorImage src={window.doorUrl} />
+              <DoorElevationHelper doorType={doorType} />
+              <LocksetHelper lockset={lockset} />
               <HingeInput
                 top={"0px"}
-                type="number"
-                value={this.state.firstHinge}
+                value={this.state.firstHingeDisplay}
                 className="disabled"
                 onChange={this.update("firstHinge")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
                 top={"80px"}
-                type="number"
-                value={this.state.secondHinge}
+                value={this.state.secondHingeDisplay}
                 className="disabled"
                 onChange={this.update("secondHinge")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
                 top={"161px"}
-                type="number"
-                value={this.state.thirdHinge}
+                value={this.state.thirdHingeDisplay}
                 className="disabled"
                 onChange={this.update("thirdHinge")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
                 top={"263px"}
-                type="number"
-                value={this.state.fourthHinge}
+                value={this.state.fourthHingeDisplay}
                 className="disabled"
                 onChange={this.update("fourthHinge")}
                 disabled={!this.state.hingeOverRide}
@@ -790,16 +849,14 @@ class DoorOrderForm extends React.Component {
 
               <LockInput
                 top={"147px"}
-                type="number"
-                value={this.state.lockLocation}
+                value={this.state.lockLocationDisplay}
                 className="disabled"
                 onChange={this.update("lockLocation")}
                 disabled={!this.state.hingeOverRide}
               />
               <LockInput
                 top={"80px"}
-                type="number"
-                value={this.state.topLockLocation}
+                value={this.state.topLockLocationDisplay}
                 className="disabled"
                 onChange={this.update("topLockLocation")}
                 disabled={!this.state.hingeOverRide}
@@ -900,7 +957,7 @@ class DoorOrderForm extends React.Component {
                       options={yesNoSelectOptions}
                       onChange={this.updateSelect("molding")}
                       value={find(
-                        yesNoSelectOptions,
+                        wideSideNarrowSideSelectOptions,
                         (obj) => obj.value === this.state.molding
                       )}
                       isSearchable={false}
@@ -953,54 +1010,68 @@ class DoorOrderForm extends React.Component {
               </VisionContainer>
             </SheetSizeContainer>
             <DoorImageContainer>
-              <DoorImage src={window.doorUrl} />
+              <DoorImage src={window.inactiveDoorUrl} />
+              <DoorElevationHelper doorType={doorType} />
+              {/* <LocksetHelper lockset={lockset} /> */}
               <HingeInput
-                top={"0px"}
-                type="number"
-                value={this.state.firstHinge}
+                top={"3px"}
+                value={this.state.firstHingeDisplay}
                 className="disabled"
                 onChange={this.update("firstHinge")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
-                top={"80px"}
-                type="number"
-                value={this.state.secondHinge}
+                top={"86px"}
+                value={this.state.secondHingeDisplay}
                 className="disabled"
                 onChange={this.update("secondHinge")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
-                top={"161px"}
-                type="number"
-                value={this.state.thirdHinge}
+                top={"167px"}
+                value={this.state.thirdHingeDisplay}
                 className="disabled"
                 onChange={this.update("thirdHinge")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
-                top={"263px"}
-                type="number"
+                top={"272px"}
                 value={this.state.fourthHinge}
                 className="disabled"
                 onChange={this.update("fourthHinge")}
                 disabled={!this.state.hingeOverRide}
               />
+              <LockInput
+                top={"20px"}
+                left={"-20px"}
+                value={this.state.inactiveTopDisplay}
+                className="disabled"
+                onChange={this.update("inactiveTop")}
+                disabled={!this.state.hingeOverRide}
+              />
 
               <LockInput
-                top={"147px"}
-                type="number"
-                value={this.state.lockLocation}
+                top={"80px"}
+                left={"-20px"}
+                value={this.state.inactiveTopLockDisplay}
                 className="disabled"
-                onChange={this.update("lockLocation")}
+                onChange={this.update("inactiveTopLock")}
                 disabled={!this.state.hingeOverRide}
               />
               <LockInput
-                top={"80px"}
-                type="number"
-                value={this.state.topLockLocation}
+                top={"146px"}
+                left={"-20px"}
+                value={this.state.inactiveBotLockDisplay}
                 className="disabled"
-                onChange={this.update("topLockLocation")}
+                onChange={this.update("inactiveBotLock")}
+                disabled={!this.state.hingeOverRide}
+              />
+              <LockInput
+                top={"300px"}
+                left={"-20px"}
+                value={this.state.inactiveBotDisplay}
+                className="disabled"
+                onChange={this.update("inactiveBot")}
                 disabled={!this.state.hingeOverRide}
               />
             </DoorImageContainer>
@@ -1066,7 +1137,7 @@ class DoorOrderForm extends React.Component {
                 <HalfFixedLabel>
                   <DebounceInput element={Input}
                     type="text"
-                    value={this.state.csLocation}
+                    value={this.state.csLocationDisplay}
                     debounceTimeout={300}
                     onChange={(event) => 
                       this.updateDebounce(event.target.value, "csLocation")}
@@ -1110,7 +1181,7 @@ class DoorOrderForm extends React.Component {
                 <HalfFixedLabel>
                   <DebounceInput element={Input}
                     type="text"
-                    value={this.state.topCsLocation}
+                    value={this.state.topCsLocationDisplay}
                     debounceTimeout={300}
                     onChange={(event) => 
                       this.updateDebounce(event.target.value, "topCsLocation")}
@@ -1140,7 +1211,7 @@ class DoorOrderForm extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const doorListing = state.entities.doorListings[ownProps.match.params.doorListingId]
-  const orderId = doorListing.orderId
+  const orderId = doorListing ? doorListing.orderId : "";
   return {
   errors: state.errors,
   formOptions: state.entities.formOptions.doorOrderForm,

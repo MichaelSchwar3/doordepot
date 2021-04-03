@@ -2,7 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import {
   processForSelect,
-  booleanSelectOptions,
+  yesNoSelectOptions,
   customStyles,
   calculateActualHeight,
   calculateActualWidth,
@@ -13,6 +13,7 @@ import { Input } from '../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
 import styled from 'styled-components';
 import { DebounceInput } from 'react-debounce-input';
+import { formatFractions } from './../../util/fraction_util';
 
 export const Container = styled.div`
   margin: auto;
@@ -40,7 +41,9 @@ class DoorOrderFormLine extends React.Component {
     super(props);
     this.state = {
       actualHeight: "",
+      actualHeightDisplay: "",
       actualWidth: "",
+      actualWidthDisplay: "",
       channelBottom: "",
       channelTop: "",
       construction: "",
@@ -53,7 +56,9 @@ class DoorOrderFormLine extends React.Component {
       lockset: "",
       lhQuantity: "",
       nsHeight: "",
+      nsHeightDisplay: "",
       nsWidth: "",
+      nsWidthDisplay: "",
       prepOnly: false,
       rhQuantity: "",
       seamless: false,
@@ -63,7 +68,9 @@ class DoorOrderFormLine extends React.Component {
       widthFeet: "",
       widthInches: "",
       wsHeight: "",
+      wsHeightDisplay: "",
       wsWidth: "",
+      wsWidthDisplay: "",
     };
   }
 
@@ -97,10 +104,10 @@ class DoorOrderFormLine extends React.Component {
 
     if (this.shouldHingeAndLockChange(currentFirstDoor)) {
       const quantity = parseInt(this.state.lhQuantity) > 0 || parseInt(this.state.rhQuantity) > 0
-      if(quantity && (this.state.letter !== "A")){
+      if(quantity && (this.state.letter !== "A") && this.state.hinges !== currentFirstDoor.hinges){
         this.setState({
           hinges: currentFirstDoor.hinges,
-          lockset: currentFirstDoor.lockset,
+          // lockset: currentFirstDoor.lockset,
         })
       }
     }
@@ -246,11 +253,17 @@ class DoorOrderFormLine extends React.Component {
     const narrowSideHeight = wideSideHeight || 0;
     this.setState({
       actualWidth: width,
+      actualWidthDisplay: formatFractions(width),
       actualHeight: height,
+      actualHeightDisplay: formatFractions(height),
       wsHeight: wideSideHeight,
+      wsHeightDisplay: formatFractions(wideSideHeight),
       wsWidth: wideSideWidth,
+      wsWidthDisplay: formatFractions(wideSideWidth),
       nsHeight: narrowSideHeight,
+      nsHeightDisplay: formatFractions(narrowSideHeight),
       nsWidth: narrowSideWidth,
+      nsWidthDisplay: formatFractions(narrowSideWidth),
     });
   }
 
@@ -324,9 +337,9 @@ class DoorOrderFormLine extends React.Component {
             <Label>
               <Select
                 styles={customStyles}
-                options={booleanSelectOptions}
+                options={yesNoSelectOptions}
                 value={find(
-                  booleanSelectOptions,
+                  yesNoSelectOptions,
                   (obj) => obj.value === this.state.so
                 )}
                 onChange={this.updateSelect("so")}
@@ -475,15 +488,14 @@ class DoorOrderFormLine extends React.Component {
                 onChange={this.updateSelect("lockset")}
                 isSearchable={false}
                 components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                isDisabled={disabledInput}
               />
             </Label>
             <Label>
               <Select
                 styles={customStyles}
-                options={booleanSelectOptions}
+                options={yesNoSelectOptions}
                 value={find(
-                  booleanSelectOptions,
+                  yesNoSelectOptions,
                   (obj) => obj.value === this.state.prepOnly
                 )}
                 onChange={this.updateSelect("prepOnly")}
@@ -494,9 +506,9 @@ class DoorOrderFormLine extends React.Component {
             <Label>
               <Select
                 styles={customStyles}
-                options={booleanSelectOptions}
+                options={yesNoSelectOptions}
                 value={find(
-                  booleanSelectOptions,
+                  yesNoSelectOptions,
                   (obj) => obj.value === this.state.seamless
                 )}
                 onChange={this.updateSelect("seamless")}
@@ -507,7 +519,7 @@ class DoorOrderFormLine extends React.Component {
           <Label>
             <Input
               type="text"
-              value={this.state.actualWidth}
+              value={this.state.actualWidthDisplay}
               onChange={this.update("actualWidth")}
               className="door-listing-input disabled"
               disabled={true}
@@ -516,7 +528,7 @@ class DoorOrderFormLine extends React.Component {
           <Label>
             <Input
               type="text"
-              value={this.state.actualHeight}
+              value={this.state.actualHeightDisplay}
               onChange={this.update("actualHeight")}
               className="door-listing-input disabled"
               disabled={true}

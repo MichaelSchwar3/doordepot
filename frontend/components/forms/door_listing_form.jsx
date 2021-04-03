@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { submitDoorListing } from "../../actions/door_listing_actions";
-import { booleanSelectOptions } from "../shared/helpers";
+import { yesNoSelectOptions } from "../shared/helpers";
 import Select from 'react-select';
 import DatePicker from "react-datepicker";
 
@@ -77,7 +77,7 @@ class DoorListingForm extends React.Component {
                 <span>Skid Up</span>
                 <Select
                   styles={customStyles}
-                  options={booleanSelectOptions}
+                  options={yesNoSelectOptions}
                   onChange={this.updateSelect("skidUp")}
                 />
               </label>
@@ -85,7 +85,7 @@ class DoorListingForm extends React.Component {
                 <span>Deliver</span>
                 <Select
                   styles={customStyles}
-                  options={booleanSelectOptions}
+                  options={yesNoSelectOptions}
                   onChange={this.updateSelect("deliver")}
                 />
               </label>

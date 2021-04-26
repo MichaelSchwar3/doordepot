@@ -15,7 +15,7 @@ class User < ApplicationRecord
     ROLES = ['dd_admin', 'account_admin', 'account_user']
 
     def self.find_by_credentials(email, password)
-        user = User.find_by(email: email)
+        user = User.find_by(email: email.downcase)
         user && user.is_password?(password) ? user : nil
     end
 

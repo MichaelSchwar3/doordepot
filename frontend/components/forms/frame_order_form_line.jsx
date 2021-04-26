@@ -36,41 +36,23 @@ const Label = styled.label`
 `;
 
 
-class DoorOrderFormLine extends React.Component {
+class FrameOrderFormLine extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      actualHeight: "",
-      actualHeightDisplay: "",
-      actualWidth: "",
-      actualWidthDisplay: "",
-      channelBottom: "",
-      channelTop: "",
       construction: "",
-      frameType: "",
       heightFeet: "",
       heightInches: "",
-      hinges: "",
-      hingeOverRide: false,
+      jamb: "",
+      ul: false,
+      rollBend: "",
+      belowFl: "",
+      prime: false,
       letter: this.props.letter,
-      lockset: "",
       lhQuantity: "",
-      nsHeight: "",
-      nsHeightDisplay: "",
-      nsWidth: "",
-      nsWidthDisplay: "",
-      prepOnly: false,
       rhQuantity: "",
-      seamless: false,
-      so: false,
-      doorType: "",
-      undercut: "",
       widthFeet: "",
       widthInches: "",
-      wsHeight: "",
-      wsHeightDisplay: "",
-      wsWidth: "",
-      wsWidthDisplay: "",
     };
   }
 
@@ -121,93 +103,7 @@ class DoorOrderFormLine extends React.Component {
     }
   }
 
-  updateDoorFromProps() {
-    const updateDoor = async () => {
-      await this.setState({
-        actualHeight: this.props.door.actualHeight,
-        actualWidth: this.props.door.actualWidth,
-        channelBottom: this.props.door.channelBottom,
-        channelTop: this.props.door.channelTop,
-        construction: this.props.door.construction,
-        frameType: this.props.door.frameType,
-        heightFeet: this.props.door.heightFeet,
-        heightInches: this.props.door.heightInches,
-        hingeOverRide: this.props.door.hingeOverRide,
-        hinges: this.props.door.hinges,
-        lockset: this.props.door.lockset,
-        letter: this.props.letter,
-        lhQuantity: this.props.door.lhQuantity,
-        nsHeight: this.props.door.nsHeight,
-        nsWidth: this.props.door.nsWidth,
-        prepOnly: this.props.door.prepOnly,
-        rhQuantity: this.props.door.rhQuantity,
-        seamless: this.props.door.seamless,
-        so: this.props.door.so,
-        doorType: this.props.door.doorType,
-        undercut: this.props.door.undercut,
-        widthFeet: this.props.door.widthFeet,
-        widthInches: this.props.door.widthInches,
-        wsHeight: this.props.door.wsHeight,
-        wsWidth: this.props.door.wsWidth,
-      })
-      this.props.updateDoorForm(this.state)
-    };
-    updateDoor();
-  }
-
-  shouldHeightChange(prevDoor) {
-    if(prevDoor.heightFeet !== this.state.heightFeet){
-      return true
-    }else if(prevDoor.heightInches !== this.state.heightInches){
-      return true
-    }else {
-      return false;
-    }
-  }
-
-  initialCalculations() {
-    this.calculateActualSizes();
-  }
-
-  shouldHingeAndLockChange(currentFirstDoor) {
-    if(currentFirstDoor.hinges !== this.state.hinges) return true;
-    if(currentFirstDoor.lockset !== this.state.lockset) return true;
-    return false;
-  }
-
-  shouldActualSizesChange(prevState, newState) {
-    if (prevState.lhQuantity !== newState.lhQuantity) {
-      return true;
-    }
-    if (prevState.rhQuantity !== newState.rhQuantity) {
-      return true;
-    }
-    if (prevState.heightFeet !== newState.heightFeet) {
-      return true;
-    }
-    if (prevState.heightInches !== newState.heightInches) {
-      return true;
-    }
-    if (prevState.widthFeet !== newState.widthFeet) {
-      return true;
-    }
-    if (prevState.widthInches !== newState.widthInches) {
-      return true;
-    }
-    if (prevState.frameType !== newState.frameType) {
-      return true;
-    }
-    if (prevState.undercut !== newState.undercut) {
-      return true;
-    }
-    if (prevState.hinges !== newState.hinges) {
-      return true;
-    }
-    if (prevState.doorType !== newState.doorType) {
-      return true;
-    }
-    return false;
-  }
+ 
 
   update(field) {
     return (e) => {
@@ -227,45 +123,6 @@ class DoorOrderFormLine extends React.Component {
     updateField()
   }
 
-  calculateActualSizes() {
-    const { rhQuantity, lhQuantity, hinges, frameType, undercut, doorType } = this.state;
-    if (rhQuantity + lhQuantity === 0) {
-      this.setState({
-        actualHeight: "",
-        actualWidth: "",
-        wsHeight: "",
-        wsWidth: "",
-        nsHeight: "",
-        nsWidth: "",
-      });
-      return ;
-    }
-    if(isEmpty(frameType)) { return };
-    const height = calculateActualHeight(
-      this.height(),
-      undercut,
-      frameType
-    ) || 0;
-    const width = calculateActualWidth(this.width(), hinges, frameType) || 0;
-    const wideSideHeight = calculateWideSideHeight(doorType, height) || 0;
-    const wideSideWidth = calculateWideSideWidth(doorType, width) || 0;
-    const narrowSideWidth = wideSideWidth ? wideSideHeight - 4 : "" || 0;
-    const narrowSideHeight = wideSideHeight || 0;
-    this.setState({
-      actualWidth: width,
-      actualWidthDisplay: formatFractions(width),
-      actualHeight: height,
-      actualHeightDisplay: formatFractions(height),
-      wsHeight: wideSideHeight,
-      wsHeightDisplay: formatFractions(wideSideHeight),
-      wsWidth: wideSideWidth,
-      wsWidthDisplay: formatFractions(wideSideWidth),
-      nsHeight: narrowSideHeight,
-      nsHeightDisplay: formatFractions(narrowSideHeight),
-      nsWidth: narrowSideWidth,
-      nsWidthDisplay: formatFractions(narrowSideWidth),
-    });
-  }
 
   height() {
     const inches = this.state.heightInches
@@ -291,41 +148,7 @@ class DoorOrderFormLine extends React.Component {
     };
   }
 
-  frameTypeOptions() {
-    const { formOptions, firstDoor } = this.props
-    
-    if(!formOptions || !firstDoor) { return [] }
-    
-    if(this.state.letter === "A") { return formOptions.frame_types }
-
-    if(firstDoor.frameType !== "A/L") {
-      return formOptions.frame_types.filter(type => type !=="A/L")
-    }
-
-    return formOptions.frame_types
-
-  }
-  doorTypeOptions() {
-    const { formOptions, firstDoor } = this.props
-    
-    if(!formOptions || !firstDoor) { return [] }
-    
-    if(this.state.letter === "A") { return formOptions.types }
-
-    const elevation = firstDoor.doorType ? firstDoor.doorType.split(" ").slice(1).join(" ") : ""
-    return formOptions.types.filter( type => type.includes(elevation));
-  }
-  // renderErrors() {
-  //   if (this.props.errors.session) {
-  //     return (
-  //       <ul>
-  //         {this.props.errors.session.map((error, idx) => {
-  //           return <li key={`error-${idx}`}>{error}</li>;
-  //         })}
-  //       </ul>
-  //     );
-  //   }
-  // }
+ 
 
   doorInputs() {
     const { formOptions } = this.props;
@@ -577,4 +400,4 @@ class DoorOrderFormLine extends React.Component {
   }
 }
 
-export default DoorOrderFormLine;
+export default FrameOrderFormLine;

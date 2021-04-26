@@ -9,6 +9,9 @@ Rails.application.routes.draw do
     resources :door_listings, only: [:index, :create, :update] do
       resources :doors, only: [:create, :index]
     end
+    resources :frame_listings, only: [:index, :create, :update] do
+      resources :frames, only: [:create, :index]
+    end
     resources :orders, only: [:create, :index, :show]
     resources :forms do
       collection do

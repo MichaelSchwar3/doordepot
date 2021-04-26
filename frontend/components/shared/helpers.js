@@ -117,8 +117,9 @@ const overSizedFour = [OVER_SIZED_2_HINGE_4_5, OVER_SIZED_3_HINGE_4_5, OVER_SIZE
 
 
 export const wideSideNarrowSideSelectOptions = [
-  {label: 'W/S', value: true,},
-  {label: 'N/S', value: false}
+  {label: 'No', value: "",},
+  {label: 'W/S', value: "W/S",},
+  {label: 'N/S', value: "N/S"}
 ]
 
 export const yesNoSelectOptions = [
@@ -230,6 +231,9 @@ export const calculateLockSizeHeight = (lockset) => {
 };
 
 export const calculateTopCsLocation = (lockset, csLocation) => {
+  console.log(lockset)
+  console.log(csLocation)
+  console.log(csLocation === '' || lockset !== 'DBL 161 Lock')
   if(csLocation === '' || lockset !== 'DBL 161 Lock') return ''
   return csLocation - 10;
 }

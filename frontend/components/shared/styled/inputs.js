@@ -20,3 +20,12 @@ export const TagInput = styled.input`
 export const Label = styled.label`
   font-size: 12px;
 `
+
+export const TextAreaInput = styled.textarea`
+  width: 100%;
+  font-size: 12px;
+  height: 60px;
+  color: black;
+  margin-top: 0px;
+  margin-bottom: 0px;
+`

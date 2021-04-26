@@ -3,6 +3,7 @@ import usersReducer from "./users_reducer";
 import formsOptionsReducer from "./form_options/form_options_reducer";
 import ordersReducer from "./orders_reducer";
 import doorListingsReducer from "./door_listings_reducer";
+import frameListingsReducer from "./frame_listings_reducer";
 import doorsReducer from "./doors_reducer";
 
 const entitiesReducer = combineReducers({
@@ -10,6 +11,7 @@ const entitiesReducer = combineReducers({
   formOptions: formsOptionsReducer,
   orders: ordersReducer,
   doorListings: doorListingsReducer,
+  frameListings: frameListingsReducer,
   doors: doorsReducer,
 });
 

@@ -15,6 +15,15 @@ json.set! 'doorListings' do
   end
 end
 
+json.set! 'frameListings' do
+  @order.frame_listings.each do |frameListing|
+    json.set! frameListing.id do
+      json.extract! frameListing, :id, :page_number, :order_id
+      json.extract! @order, :order_number, :po_number
+    end
+  end
+end
+
 json.set! 'doors' do
   @order.doors.each do |door|
     json.set! door.id do

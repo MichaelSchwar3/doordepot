@@ -20,7 +20,7 @@ import {
   inactiveHelper
 } from "../shared/helpers";
 import { fetchDoorOrderOptions } from '../../actions/door_order_actions';
-import { Input } from '../shared/styled/inputs';
+import { Input, TextAreaInput } from '../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
 import { getDoors } from '../../selectors/door_selectors'
 import styled from 'styled-components';
@@ -39,6 +39,7 @@ const DoorImage = styled.img`
 
 export const Container = styled.div`
   width: 100%;
+  position: relative;
   display flex;
   flex-direction: column;
   max-width: 1280px;
@@ -47,11 +48,22 @@ export const Container = styled.div`
 
 const SubmitButton = styled.button`
   position: absolute;
-  right: 25px;
+  left: -160px;
   top: 80px;
   background: black;
   color: white;
-  width: 150px;
+  width: 100px;
+  height: 75px;
+  text-align: center;
+  margin-left: 175px;
+`;
+const HingeOverride = styled.button`
+  position: absolute;
+  left: -160px;
+  top: 160px;
+  background: black;
+  color: white;
+  width: 100px;
   height: 75px;
   text-align: center;
   margin-left: 175px;
@@ -156,6 +168,12 @@ const VisionRow = styled.div`
   border-left:1px solid black;
   border-top:1px solid black;
 `;
+const ElevationNotesRow = styled.div`
+  display: grid;
+  grid-template-columns: 30% 70%;
+  border-left:1px solid black;
+  border-top:1px solid black;
+`;
 
 const VisionRowCutOut = styled.div`
   display: grid;
@@ -229,6 +247,7 @@ class DoorOrderForm extends React.Component {
       csLocationDisplay: "",
       elevationHeight: "",
       elevationWidth: "",
+      elevationNotes: "",
       dateRequired: "",
       dateCompleted: "",
       deliver: false,
@@ -262,7 +281,7 @@ class DoorOrderForm extends React.Component {
       lockSizeWidthBot: "",
       lockSizeWidthTop: "",
       lockset: "",
-      molding: false,
+      molding: "",
       moldingBy: "",
       phoneNumber: "",
       prime: false,
@@ -278,6 +297,7 @@ class DoorOrderForm extends React.Component {
       topLockLocationDisplay: "",
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.hingeOverRide = this.hingeOverRide.bind(this);
     this.setInactive = this.setInactive.bind(this);
   }
 
@@ -316,7 +336,8 @@ class DoorOrderForm extends React.Component {
     if (this.shouldInactiveChange(prevProps, this.props)) {
       this.setInactive()
     }
-    if (this.shouldTopLockLocationChange(prevDoor, currentDoor)) {
+    if (this.shouldTopLockLocationChange(prevDoor, currentDoor, prevState)) {
+      console.log("should top lock change - yes")
       this.calculateTopLockLocation()
     }
     if (this.shouldCommonUpdate(prevState)) {
@@ -358,6 +379,7 @@ class DoorOrderForm extends React.Component {
   }
 
   initialCalculations() {
+    console.log("initialcalculations")
     this.calculateHinges();
     this.calculateHingeWidth();
     this.calculateLockInputs();
@@ -402,15 +424,15 @@ class DoorOrderForm extends React.Component {
     return false;
   }
 
-  shouldTopLockLocationChange(prevDoor, currentDoor) {
+  shouldTopLockLocationChange(prevDoor, currentDoor, prevState) {
 
     if (this.state.initialLoad) {
       return true
     }
-    if (prevDoor.lockSizeHeightTop !== currentDoor.lockSizeHeightTop) {
+    if (prevState.lockSizeHeightTop !== this.state.lockSizeHeightTop) {
       return true;
     }
-    if (prevDoor.csLocation !== currentDoor.csLocation) {
+    if (prevState.csLocation !== this.state.csLocation) {
       return true;
     }
     if (prevDoor.lockset !== currentDoor.lockset) {
@@ -435,6 +457,7 @@ class DoorOrderForm extends React.Component {
     if (this.state.initialLoad) {
       return true
     }
+    if (this.state.hingeOverride) { return false }
     if (prevDoor.hingeOverRide === true && currentDoor.hingeOverRide == false) {
       return true;
     }
@@ -524,10 +547,26 @@ class DoorOrderForm extends React.Component {
     submit();
   }
 
+  hingeOverRide(e) {
+    e.preventDefault();
+    this.setState({
+      hingeOverRide: !this.state.hingeOverRide
+    })
+  }
+
   update(field) {
     return (e) => {
       return this.setState({
         [field]: e.currentTarget.value,
+      });
+    };
+  }
+  updateHingOverride(field, fieldDisplay) {
+    return (e) => {
+      const value = e.currentTarget.value;
+      return this.setState({
+        [field]: value,
+        [fieldDisplay]: formatFractions(e.currentTarget.value),
       });
     };
   }
@@ -570,8 +609,9 @@ class DoorOrderForm extends React.Component {
     if (isEmpty(form) || isEmpty(form["A"])) return;
 
     const currentDoor = form["A"]
-    const { lockset } = currentDoor;
-    const topCsLocation = calculateTopCsLocation(lockset, this.state.csLocation);
+    const { lockset, frameType } = currentDoor;
+    const topCsLocation = calculateTopCsLocation(lockset, calculateCsLocation(this.height(), lockset, frameType));
+
     const topLockLocation =
       topCsLocation && this.state.lockSizeHeightTop
         ? topCsLocation - this.state.lockSizeHeightTop / 2.0
@@ -586,6 +626,7 @@ class DoorOrderForm extends React.Component {
 
   calculateHinges() {
     const { form, updateDoorCommon } = this.props
+    if(this.state.HingeOverride) return ;
     if (isEmpty(form) || isEmpty(form["A"])) return;
     const currentDoor = form["A"]
     const height = this.height();
@@ -803,6 +844,7 @@ class DoorOrderForm extends React.Component {
           </Row>
           {this.doorLines()}
             <SubmitButton onClick={this.handleSubmit}> {this.props.door && this.props.door.id ? "Update" : "Submit"} </SubmitButton>
+            <HingeOverride onClick={this.hingeOverRide}> Hinge Override: {this.state.hingeOverRide ? "True" : "False"}</HingeOverride>
 
           <MiddleSection>
             <DoorImageContainer>
@@ -813,28 +855,28 @@ class DoorOrderForm extends React.Component {
                 top={"0px"}
                 value={this.state.firstHingeDisplay}
                 className="disabled"
-                onChange={this.update("firstHinge")}
+                onChange={this.updateHingOverride("firstHinge", "firstHingeDisplay")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
                 top={"80px"}
                 value={this.state.secondHingeDisplay}
                 className="disabled"
-                onChange={this.update("secondHinge")}
+                onChange={this.updateHingOverride("secondHinge", "secondHingeDisplay")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
                 top={"161px"}
                 value={this.state.thirdHingeDisplay}
                 className="disabled"
-                onChange={this.update("thirdHinge")}
+                onChange={this.updateHingOverride("thirdHinge", "thirdHingeDisplay")}
                 disabled={!this.state.hingeOverRide}
               />
               <HingeInput
                 top={"263px"}
                 value={this.state.fourthHingeDisplay}
                 className="disabled"
-                onChange={this.update("fourthHinge")}
+                onChange={this.updateHingOverride("fourthHinge", "fourthHingeDisplay")}
                 disabled={!this.state.hingeOverRide}
               />
               <BacksetInput
@@ -954,7 +996,7 @@ class DoorOrderForm extends React.Component {
                   <VisionRowDiv>
                     <Select
                       styles={customFixedStyles}
-                      options={yesNoSelectOptions}
+                      options={wideSideNarrowSideSelectOptions}
                       onChange={this.updateSelect("molding")}
                       value={find(
                         wideSideNarrowSideSelectOptions,
@@ -1007,6 +1049,20 @@ class DoorOrderForm extends React.Component {
                     />
                   </VisionRowDiv>
                 </VisionRow>
+                <ElevationNotesRow>
+                  <VisionRowDiv>
+                    Elevation Notes:
+                  </VisionRowDiv>
+                  <VisionRowDiv>
+                    <DebounceInput element={TextAreaInput}
+                      type="text"
+                      value={this.state.elevationNotes}
+                      debounceTimeout={300}
+                      onChange={(event) => 
+                        this.updateDebounce(event.target.value, "elevationNotes")}
+                    />
+                  </VisionRowDiv>
+                </ElevationNotesRow>
               </VisionContainer>
             </SheetSizeContainer>
             <DoorImageContainer>

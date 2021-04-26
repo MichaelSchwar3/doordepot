@@ -38,7 +38,7 @@ const Nav = (props) => {
             })}
           </ul>
         </div>
-        <div className="nav-box" id="nav-friend">
+        <div className="nav-box" id="nav-friend" onClick={props.logout}>
           Log Out
         </div>
       </div>

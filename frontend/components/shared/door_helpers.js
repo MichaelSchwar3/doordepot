@@ -231,9 +231,6 @@ export const calculateLockSizeHeight = (lockset) => {
 };
 
 export const calculateTopCsLocation = (lockset, csLocation) => {
-  console.log(lockset)
-  console.log(csLocation)
-  console.log(csLocation === '' || lockset !== 'DBL 161 Lock')
   if(csLocation === '' || lockset !== 'DBL 161 Lock') return ''
   return csLocation - 10;
 }

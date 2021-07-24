@@ -1,36 +1,21 @@
 import { connect } from 'react-redux';
-import { submitDoor, fetchDoors } from '../../actions/door_actions';
-import { updateDoorForm, updateDoorTags, updateDoorCommon } from '../../actions/door_form_actions';
+import { submitDoor, fetchDoors } from '../../../actions/door_actions';
+import { updateDoorForm, updateDoorTags, updateDoorCommon } from '../../../actions/door_form_actions';
 import React from 'react';
 import Select from 'react-select';
 import {
-  processForSelect,
-  doorHingeHelper,
   yesNoSelectOptions,
   customFixedStyles,
-  calculateCsLocation,
-  calculateLockLocation,
-  calculateLockSizeWidth,
-  calculateLockSizeHeight,
-  calculateTopCsLocation,
-  calculateLockBackset,
-  calculateHingeBackset,
-  depotOthersSelectOptions,
-  wideSideNarrowSideSelectOptions,
-  inactiveHelper
-} from "../shared/helpers";
-import { fetchDoorOrderOptions } from '../../actions/door_order_actions';
-import { Input, TextAreaInput } from '../shared/styled/inputs';
+} from "../../shared/frame_helpers";
+import { fetchDoorOrderOptions } from '../../../actions/door_order_actions';
+import { Input, TextAreaInput } from '../../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
-import { getDoors } from '../../selectors/door_selectors'
+import { getDoors } from '../../../selectors/door_selectors'
 import styled from 'styled-components';
 import FrameOrderFormLine from './frame_order_form_line'
 import DoorOrderTagLine from './door_order_tag_line'
-import DoorOrderSheetLine from './door_order_sheet_line'
 import { DebounceInput } from 'react-debounce-input';
-import DoorElevationHelper from './door_elevation_helper';
-import LocksetHelper from './lockset_helper';
-import { formatFractions } from './../../util/fraction_util';
+import { formatFractions } from './../../../util/fraction_util';
 
 const DoorImage = styled.img`
   position: relative;
@@ -239,7 +224,7 @@ const ColumnTitle = styled.div`
 `;
 
 
-class DoorOrderForm extends React.Component {
+class FrameOrderForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -268,8 +253,8 @@ class DoorOrderForm extends React.Component {
 
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.hingeOverRide = this.hingeOverRide.bind(this);
-    this.setInactive = this.setInactive.bind(this);
+    // this.hingeOverRide = this.hingeOverRide.bind(this);
+    // this.setInactive = this.setInactive.bind(this);
   }
 
   componentDidMount() {
@@ -289,35 +274,35 @@ class DoorOrderForm extends React.Component {
     if(isEmpty(prevForm["A"]) || isEmpty(form["A"])) {
       return
     }
-    const prevDoor = isEmpty(prevForm) ? {} : prevForm["A"] 
-    const currentDoor = isEmpty(form) ? {} : form["A"]  
+    // const prevDoor = isEmpty(prevForm) ? {} : prevForm["A"] 
+    // const currentDoor = isEmpty(form) ? {} : form["A"]  
 
-    if (this.shouldHingeLocationsChange(prevForm, form, prevState, this.state)) {
-      this.calculateHinges();
-    }
-    if (prevDoor && (prevDoor.frameType !== currentDoor.frameType)) {
-      this.calculateHingeWidth();
-    }
-    if (this.shouldCsLocationChange(prevDoor, currentDoor)) {
-      this.calculateLockInputs()
-    }
-    if (this.shouldLockSizeChange(prevDoor, currentDoor)) {
-      this.calculateLockSizeBot()
-    }
-    if (this.shouldInactiveChange(prevProps, this.props)) {
-      this.setInactive()
-    }
-    if (this.shouldTopLockLocationChange(prevDoor, currentDoor, prevState)) {
-      console.log("should top lock change - yes")
-      this.calculateTopLockLocation()
-    }
-    if (this.shouldCommonUpdate(prevState)) {
-      updateDoorCommon(this.state)
-    }
+    // if (this.shouldHingeLocationsChange(prevForm, form, prevState, this.state)) {
+    //   this.calculateHinges();
+    // }
+    // if (prevDoor && (prevDoor.frameType !== currentDoor.frameType)) {
+    //   this.calculateHingeWidth();
+    // }
+    // if (this.shouldCsLocationChange(prevDoor, currentDoor)) {
+    //   this.calculateLockInputs()
+    // }
+    // if (this.shouldLockSizeChange(prevDoor, currentDoor)) {
+    //   this.calculateLockSizeBot()
+    // }
+    // if (this.shouldInactiveChange(prevProps, this.props)) {
+    //   this.setInactive()
+    // }
+    // if (this.shouldTopLockLocationChange(prevDoor, currentDoor, prevState)) {
+    //   console.log("should top lock change - yes")
+    //   this.calculateTopLockLocation()
+    // }
+    // if (this.shouldCommonUpdate(prevState)) {
+    //   updateDoorCommon(this.state)
+    // }
     
-    if (this.state.initialLoad){
-      this.setState({initialLoad: false})
-    }
+    // if (this.state.initialLoad){
+    //   this.setState({initialLoad: false})
+    // }
   }
 
 
@@ -514,8 +499,9 @@ class DoorOrderForm extends React.Component {
   }
 
   render() {
+    console.log("Fetching")
     if (this.state.fetching) return null;
-  
+    console.log("Fetched")
     return (
       <div className="door-order-form-container">
         {this.doorInputs()}
@@ -548,4 +534,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   updateDoorCommon: (common) => dispatch(updateDoorCommon(common)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DoorOrderForm);
+export default connect(mapStateToProps, mapDispatchToProps)(FrameOrderForm);

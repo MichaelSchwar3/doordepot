@@ -8,12 +8,12 @@ import {
   calculateActualWidth,
   calculateWideSideHeight,
   calculateWideSideWidth,
-} from "../shared/helpers";
-import { Input } from '../shared/styled/inputs';
+} from "../../shared/door_helpers";
+import { Input } from '../../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
 import styled from 'styled-components';
 import { DebounceInput } from 'react-debounce-input';
-import { formatFractions } from './../../util/fraction_util';
+import { formatFractions } from './../../../util/fraction_util';
 
 export const Container = styled.div`
   margin: auto;

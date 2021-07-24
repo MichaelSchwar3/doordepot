@@ -2,9 +2,10 @@ import React from "react";
 import { AuthRoute, ProtectedRoute } from "../util/route_util";
 import { Route, Link, Switch } from "react-router-dom";
 import LoginForm from './session/login_form';
-import DoorOrderForm from './forms/door_order_form';
+import DoorOrderForm from './forms/doors/door_order_form';
+import FrameOrderForm from './forms/frames/frame_order_form';
 import OrderForm from './forms/order_form';
-import DoorListingForm from './forms/door_listing_form';
+import DoorListingForm from './forms/doors/door_listing_form';
 import OrderIndex from './orders/order_index';
 import Order from './orders/order';
 import Nav from "./nav/nav";
@@ -20,6 +21,7 @@ const App = () => (
     <ProtectedRoute exact path="/orders/:orderId/" component={Order} />
     <ProtectedRoute exact path="/orders/:orderId/doorListings/create/" component={DoorListingForm} />
     <ProtectedRoute exact path="/doorListings/:doorListingId/" component={DoorOrderForm} />
+    <ProtectedRoute exact path="/frameListings/:frameListingId/" component={FrameOrderForm} />
     {/* <ProtectedRoute exact path="/doorListings/:doorListingId/door/:doorId" component={DoorOrderForm} /> */}
     {/* <Switch> */}
     {/* <ProtectedRoute path="/cards/new" component={CardForm} /> */}

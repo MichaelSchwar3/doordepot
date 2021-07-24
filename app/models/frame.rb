@@ -1,6 +1,6 @@
-class Door < ApplicationRecord
+class Frame < ApplicationRecord
 
-  belongs_to :door_listing
+  belongs_to :frame_listing
 
   TYPES = [
     'Single',

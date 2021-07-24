@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { submitDoor, fetchDoors } from '../../actions/door_actions';
-import { updateDoorForm, updateDoorTags, updateDoorCommon } from '../../actions/door_form_actions';
+import { submitDoor, fetchDoors } from '../../../actions/door_actions';
+import { updateDoorForm, updateDoorTags, updateDoorCommon } from '../../../actions/door_form_actions';
 import React from 'react';
 import Select from 'react-select';
 import {
@@ -18,11 +18,11 @@ import {
   depotOthersSelectOptions,
   wideSideNarrowSideSelectOptions,
   inactiveHelper
-} from "../shared/helpers";
-import { fetchDoorOrderOptions } from '../../actions/door_order_actions';
-import { Input, TextAreaInput } from '../shared/styled/inputs';
+} from "../../shared/door_helpers";
+import { fetchDoorOrderOptions } from '../../../actions/door_order_actions';
+import { Input, TextAreaInput } from '../../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
-import { getDoors } from '../../selectors/door_selectors'
+import { getDoors } from '../../../selectors/door_selectors'
 import styled from 'styled-components';
 import DoorOrderFormLine from './door_order_form_line'
 import DoorOrderTagLine from './door_order_tag_line'
@@ -30,7 +30,7 @@ import DoorOrderSheetLine from './door_order_sheet_line'
 import { DebounceInput } from 'react-debounce-input';
 import DoorElevationHelper from './door_elevation_helper';
 import LocksetHelper from './lockset_helper';
-import { formatFractions } from './../../util/fraction_util';
+import { formatFractions } from './../../../util/fraction_util';
 
 const DoorImage = styled.img`
   position: relative;

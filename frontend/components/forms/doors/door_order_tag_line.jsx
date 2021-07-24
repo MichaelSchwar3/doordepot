@@ -1,5 +1,5 @@
 import React from 'react';
-import { TagInput } from '../shared/styled/inputs';
+import { TagInput } from '../../shared/styled/inputs';
 import styled from 'styled-components';
 import { DebounceInput } from 'react-debounce-input';
 

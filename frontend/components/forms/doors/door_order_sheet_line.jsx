@@ -1,8 +1,7 @@
 import React from 'react';
-import { TagInput } from '../shared/styled/inputs';
 import { find, isEmpty } from 'lodash';
 import styled from 'styled-components';
-import { formatFractions } from './../../util/fraction_util';
+import { formatFractions } from './../../../util/fraction_util';
 
 const SheetSizeLineContainer = styled.div`
   display: grid;
